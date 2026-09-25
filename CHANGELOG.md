@@ -15,3 +15,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   and launches.
 - Coverage gate: 70 percent overall and 80 percent on the bean and index
   packages, enforced before every ship.
+- Documented bean file format in docs/bean-format.md, with parser fixtures
+  taken from the real hmans/beans repository.

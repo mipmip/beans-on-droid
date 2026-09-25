@@ -1,11 +1,11 @@
 ---
 # beans-on-droid-88wd
 title: Bean format research spike
-status: todo
+status: in-progress
 type: epic
 priority: normal
 created_at: 2026-09-25T15:14:34Z
-updated_at: 2026-09-25T15:14:34Z
+updated_at: 2026-09-25T17:58:37Z
 parent: beans-on-droid-rhgf
 ---
 
