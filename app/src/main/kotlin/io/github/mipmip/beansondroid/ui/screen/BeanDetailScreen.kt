@@ -75,6 +75,21 @@ fun BeanDetailScreen(
             )
         },
     ) { padding ->
+        if (ready == null) {
+            Message(
+                title = "Not ready yet",
+                body = when (val current = state) {
+                    is IndexState.Failed -> AppViewModel.describe(current.error)
+                    is IndexState.Working -> "The repository is still being read."
+                    else -> "No repository is open."
+                },
+                modifier = Modifier.padding(padding),
+                actionLabel = "Back",
+                onAction = onBack,
+            )
+            return@Scaffold
+        }
+
         if (bean == null) {
             Message(
                 title = "That bean is not here",

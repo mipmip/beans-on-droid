@@ -16,7 +16,11 @@ sealed interface IndexState {
 
     data class Working(val what: Activity, val repo: RepoConfig?) : IndexState
 
-    data class Ready(val repo: RepoConfig, val beans: LoadedBeans) : IndexState
+    data class Ready(
+        val repo: RepoConfig,
+        val beans: LoadedBeans,
+        val staleReason: String? = null,
+    ) : IndexState
 
     data class Failed(val repo: RepoConfig?, val error: RepoError) : IndexState
 }
@@ -64,6 +68,13 @@ class BeansRepository(
         loadActive()
     }
 
+    suspend fun loadActiveIfNeeded() {
+        val showing = _indexState.value
+        val activeId = catalog.current().activeId
+        if (showing is IndexState.Ready && showing.repo.id == activeId) return
+        loadActive()
+    }
+
     suspend fun loadActive() {
         val active = catalog.current().active
         if (active == null) {
@@ -90,10 +101,18 @@ class BeansRepository(
             _indexState.value = IndexState.NoRepository
             return
         }
+        val showing = _indexState.value as? IndexState.Ready
         _indexState.value = IndexState.Working(Activity.Refreshing, active)
+
         when (val refreshed = store.refresh(active.id, catalog.tokenFor(active.id))) {
-            is RepoResult.Failure -> _indexState.value = IndexState.Failed(active, refreshed.error)
             is RepoResult.Success -> indexActive(active)
+
+            is RepoResult.Failure -> _indexState.value = when {
+                showing != null && showing.repo.id == active.id ->
+                    showing.copy(staleReason = refreshed.error.message)
+
+                else -> IndexState.Failed(active, refreshed.error)
+            }
         }
     }
 

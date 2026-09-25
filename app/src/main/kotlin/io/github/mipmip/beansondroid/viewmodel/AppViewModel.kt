@@ -49,7 +49,7 @@ class AppViewModel(
     val refreshing: StateFlow<Boolean> = _refreshing.asStateFlow()
 
     init {
-        viewModelScope.launch { withContext(io) { repository.loadActive() } }
+        viewModelScope.launch { withContext(io) { repository.loadActiveIfNeeded() } }
     }
 
     fun setTerm(term: String) {
@@ -124,7 +124,7 @@ class AppViewModel(
     }
 
     fun retry() {
-        viewModelScope.launch { withContext(io) { repository.loadActive() } }
+        viewModelScope.launch { withContext(io) { repository.loadActiveIfNeeded() } }
     }
 
     private fun <T> MutableStateFlow<T>.update(block: (T) -> T) {

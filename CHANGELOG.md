@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- A failed refresh replaced the beans already on screen with an error page,
+  instead of keeping the last fetched copy.
+- Recreating a screen after a failed refresh silently cleared the warning that
+  the beans were stale.
+- The bean detail view claimed a bean was missing whenever the index was not
+  loaded, including before any repository was opened.
+
 - The coverage gate measured only the two core packages, so it reported
   success while overall coverage was below its own floor.
 
@@ -39,3 +46,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   types and tags the repository actually uses, and pull to refresh.
 - Bean detail: rendered Markdown body, every frontmatter field including
   unrecognised ones, and tappable links to related beans.
+- Files the parser could not read are listed by name with a reason, not just
+  counted.

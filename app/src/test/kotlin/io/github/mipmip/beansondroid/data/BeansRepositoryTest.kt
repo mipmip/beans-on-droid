@@ -8,6 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import org.eclipse.jgit.api.Git
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
@@ -139,6 +140,69 @@ class BeansRepositoryTest {
         beans.addRepository(remote(), "Remote", null)
         beans.removeRepository(catalog.current().active!!.id)
         assertEquals(IndexState.NoRepository, beans.indexState.value)
+    }
+
+    @Test
+    fun aFailedRefreshKeepsTheBeansOnScreenAndExplainsWhy() = runBlocking {
+        val url = remote("remote", beanCount = 2)
+        beans.addRepository(url, "Remote", null)
+        assertTrue(beans.indexState.value is IndexState.Ready)
+
+        File(java.net.URI(url)).deleteRecursively()
+        beans.refresh()
+
+        val state = beans.indexState.value
+        assertTrue("$state", state is IndexState.Ready)
+        assertEquals(2, (state as IndexState.Ready).beans.index.size)
+        assertTrue(state.staleReason != null)
+    }
+
+    @Test
+    fun aSuccessfulRefreshClearsAPreviousStaleMarker() = runBlocking {
+        val url = remote("remote", beanCount = 1)
+        beans.addRepository(url, "Remote", null)
+        val remoteDir = File(java.net.URI(url))
+        val moved = File(remoteDir.parentFile, "moved-away")
+
+        remoteDir.renameTo(moved)
+        beans.refresh()
+        assertTrue((beans.indexState.value as IndexState.Ready).staleReason != null)
+
+        moved.renameTo(remoteDir)
+        beans.refresh()
+        assertNull((beans.indexState.value as IndexState.Ready).staleReason)
+    }
+
+    @Test
+    fun aFailedRefreshOnADifferentRepositoryStillFails() = runBlocking {
+        val url = remote("remote", beanCount = 1)
+        val config = catalog.add(url, "Remote", null)
+        catalog.activate(config.id)
+        File(java.net.URI(url)).deleteRecursively()
+
+        beans.loadActive()
+        assertTrue(beans.indexState.value is IndexState.Failed)
+    }
+
+    @Test
+    fun loadActiveIfNeededDoesNotDisturbAStaleMarker() = runBlocking {
+        val url = remote("remote", beanCount = 1)
+        beans.addRepository(url, "Remote", null)
+        File(java.net.URI(url)).deleteRecursively()
+        beans.refresh()
+        assertTrue((beans.indexState.value as IndexState.Ready).staleReason != null)
+
+        beans.loadActiveIfNeeded()
+        assertTrue((beans.indexState.value as IndexState.Ready).staleReason != null)
+    }
+
+    @Test
+    fun loadActiveIfNeededLoadsWhenNothingIsShowing() = runBlocking {
+        val config = catalog.add(remote(), "Remote", null)
+        catalog.activate(config.id)
+
+        beans.loadActiveIfNeeded()
+        assertTrue(beans.indexState.value is IndexState.Ready)
     }
 
     @Test

@@ -48,6 +48,7 @@ object TestRepo {
         val dir = File(root, name).apply { mkdirs() }
         Git.init().setDirectory(dir).setInitialBranch("main").call().use { git ->
             File(dir, ".beans").mkdirs()
+            File(dir, ".beans/.gitkeep").writeText("")
             File(dir, ".beans.yml").writeText("beans:\n    path: .beans\n")
             beans.forEach { (id, title, body) ->
                 File(dir, ".beans/$id--${title.lowercase().replace(' ', '-')}.md").writeText(body)
