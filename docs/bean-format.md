@@ -34,7 +34,7 @@ order:
 | Double dash | `beans-5ucr--investigate.md`   | `beans-5ucr`| `investigate`   |
 | Dot         | `beans-5ucr.investigate.md`    | `beans-5ucr`| `investigate`   |
 | Single dash | `f7g-user-registration.md`     | `f7g`       | `user-registration` |
-| Id only     | `beans-5ucr.md`                | `beans-5ucr`| (empty)         |
+| No separator| `beansnoslug.md`               | `beansnoslug`| (empty)        |
 
 Order matters. Ids contain the project prefix and prefixes contain hyphens, so
 `beans-on-droid-88wd--spike.md` only parses correctly because the double-dash

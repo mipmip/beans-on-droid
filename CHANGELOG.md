@@ -17,3 +17,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   packages, enforced before every ship.
 - Documented bean file format in docs/bean-format.md, with parser fixtures
   taken from the real hmans/beans repository.
+- Bean parser: reads every documented frontmatter field, keeps unrecognised
+  ones, and skips a malformed file instead of failing the whole repository.

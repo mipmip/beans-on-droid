@@ -83,6 +83,7 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.snakeyaml)
 
     testImplementation(libs.junit)
 
@@ -113,7 +114,10 @@ private fun Project.coverageClassTree() =
     }
 
 private fun Project.coverageExecutionData() =
-    fileTree(layout.buildDirectory) { include("**/*.exec", "**/*.ec") }
+    fileTree(layout.buildDirectory.dir("jacoco")) { include("*.exec") } +
+        fileTree(layout.buildDirectory.dir("outputs/unit_test_code_coverage")) {
+            include("**/*.exec", "**/*.ec")
+        }
 
 tasks.register<JacocoReport>("jacocoTestReport") {
     group = "verification"
