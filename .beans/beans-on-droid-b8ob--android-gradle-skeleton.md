@@ -1,11 +1,11 @@
 ---
 # beans-on-droid-b8ob
 title: Android Gradle skeleton
-status: todo
+status: in-progress
 type: epic
 priority: normal
 created_at: 2026-09-25T15:14:34Z
-updated_at: 2026-09-25T15:14:34Z
+updated_at: 2026-09-25T17:42:27Z
 parent: beans-on-droid-hsk9
 ---
 

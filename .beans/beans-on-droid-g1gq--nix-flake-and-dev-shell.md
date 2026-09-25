@@ -1,12 +1,13 @@
 ---
 # beans-on-droid-g1gq
 title: Nix flake and dev shell
-status: in-progress
+status: completed
 type: epic
 priority: normal
 created_at: 2026-09-25T15:14:34Z
-updated_at: 2026-09-25T17:39:02Z
+updated_at: 2026-09-25T17:40:34Z
 parent: beans-on-droid-hsk9
+openspec-link: openspec/changes/archive/2026-09-25-nix-flake-dev-shell
 ---
 
 Plain nix flake, no flake-utils. Supported systems enumerated explicitly with nixpkgs.lib.genAttrs. Provides a devShell with JDK 17, the Android SDK (platform 36, build-tools, platform-tools, cmdline-tools) and Gradle, plus formatter and a flake check.

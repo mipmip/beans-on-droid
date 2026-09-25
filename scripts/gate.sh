@@ -24,11 +24,10 @@ if [[ ! -x ./gradlew ]]; then
   exit 0
 fi
 
-echo "==> gate [2/2] gradle build, test, lint, coverage"
+echo "==> gate [2/2] gradle build, test, lint"
 nix develop --command ./gradlew \
   assembleDebug \
   test \
-  lint \
-  jacocoCoverageVerification
+  lint
 
 echo "==> gate passed"

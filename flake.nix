@@ -27,8 +27,8 @@
       androidFor = pkgs: pkgs.androidenv.composeAndroidPackages {
         cmdLineToolsVersion = "22.0";
         platformToolsVersion = "37.0.1";
-        buildToolsVersions = [ "36.0.0" ];
-        platformVersions = [ "36" ];
+        buildToolsVersions = [ "37.0.0" ];
+        platformVersions = [ "37.0" "36" ];
         includeEmulator = false;
         includeSystemImages = false;
         includeSources = false;
@@ -58,7 +58,7 @@
             ANDROID_SDK_ROOT = "${sdk}/libexec/android-sdk";
 
             shellHook = ''
-              export GRADLE_OPTS="-Dorg.gradle.project.android.aapt2FromMavenOverride=$ANDROID_SDK_ROOT/build-tools/36.0.0/aapt2"
+              export GRADLE_OPTS="-Dorg.gradle.project.android.aapt2FromMavenOverride=$ANDROID_SDK_ROOT/build-tools/37.0.0/aapt2"
               echo "beans-on-droid dev shell: jdk $(javac -version 2>&1), sdk at $ANDROID_SDK_ROOT"
             '';
           };

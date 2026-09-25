@@ -25,11 +25,13 @@ Repeat until no epic is left:
 7. Add user-facing entries to `CHANGELOG.md` under `## [Unreleased]`.
 8. `./scripts/ship-change.sh <change-name>`. This gates, archives, commits, and
    pushes. If the gate fails, nothing is archived or committed: fix and run again.
-9. Check off every acceptance box in the bean body, then
-   `beans update <epic-id> -s completed`, and add the archive path to the bean
-   frontmatter as `openspec-link: openspec/changes/archive/...`. A bean with an
-   unchecked box is not completed.
-10. Append a `## Summary of Changes` section to the bean.
+9. `beans update <epic-id> -s completed` and add the archive path to the bean
+   frontmatter as `openspec-link: openspec/changes/archive/...`.
+
+Status and `openspec-link` are the only things you may change in a bean file.
+The acceptance boxes in a bean body stay as written; they are the contract the
+change's `tasks.md` must cover, and it is `tasks.md` you tick off. Do not append
+a summary to a bean either. The OpenSpec archive is the record of what was done.
 
 When every epic under a milestone is completed, set the milestone to `completed`
 too.
