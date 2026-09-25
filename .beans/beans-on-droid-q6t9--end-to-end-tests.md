@@ -1,12 +1,13 @@
 ---
 # beans-on-droid-q6t9
 title: End to end tests
-status: in-progress
+status: completed
 type: epic
 priority: normal
 created_at: 2026-09-25T15:14:34Z
-updated_at: 2026-09-25T19:33:48Z
+updated_at: 2026-09-25T19:54:45Z
 parent: beans-on-droid-haij
+openspec-link: openspec/changes/archive/2026-09-25-end-to-end-tests
 ---
 
 Instrumented Compose tests that prove the PoC does what the briefing claims, driven against a local git repo served from the test device.

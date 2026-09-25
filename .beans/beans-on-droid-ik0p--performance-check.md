@@ -1,11 +1,11 @@
 ---
 # beans-on-droid-ik0p
 title: Performance check
-status: todo
+status: in-progress
 type: epic
 priority: normal
 created_at: 2026-09-25T15:14:34Z
-updated_at: 2026-09-25T15:14:34Z
+updated_at: 2026-09-25T19:55:25Z
 parent: beans-on-droid-haij
 ---
 

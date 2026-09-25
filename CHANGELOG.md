@@ -52,3 +52,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   counted.
 - End-to-end tests driving the whole app against a git repository served over
   HTTP, including authentication and pull to refresh.
+- Measured performance at 600 beans, recorded in docs/performance.md.
