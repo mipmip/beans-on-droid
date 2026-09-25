@@ -1,12 +1,13 @@
 ---
 # beans-on-droid-rs1v
 title: Token and repo list persistence
-status: in-progress
+status: completed
 type: epic
 priority: normal
 created_at: 2026-09-25T15:14:34Z
-updated_at: 2026-09-25T18:28:52Z
+updated_at: 2026-09-25T18:34:10Z
 parent: beans-on-droid-rhgf
+openspec-link: openspec/changes/archive/2026-09-25-repo-persistence
 ---
 
 Repo list in DataStore. Token encrypted with an Android Keystore-backed key, never in plain preferences.

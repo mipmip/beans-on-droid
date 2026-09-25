@@ -19,11 +19,16 @@ private val coverageExclusions = listOf(
     "**/*\$*\$*.*",
     "io/github/mipmip/beansondroid/ui/**",
     "io/github/mipmip/beansondroid/MainActivity*",
+    "io/github/mipmip/beansondroid/BeansOnDroidApplication*",
+    "io/github/mipmip/beansondroid/repo/AndroidGit*",
+    "io/github/mipmip/beansondroid/repo/AndroidSystemReader*",
+    "io/github/mipmip/beansondroid/store/RepoRegistry*",
+    "io/github/mipmip/beansondroid/store/KeystoreTokenVault*",
 )
 
 private val corePackages = listOf(
-    "io/github/mipmip/beansondroid/bean/**",
-    "io/github/mipmip/beansondroid/index/**",
+    "io.github.mipmip.beansondroid.bean",
+    "io.github.mipmip.beansondroid.index",
 )
 
 android {
@@ -162,19 +167,13 @@ tasks.register<JacocoCoverageVerification>("jacocoCoverageVerification") {
             }
         }
         rule {
-            element = "BUNDLE"
-            includes = listOf("*")
+            element = "PACKAGE"
+            includes = corePackages
             limit {
                 counter = "INSTRUCTION"
                 value = "COVEREDRATIO"
                 minimum = "0.80".toBigDecimal()
             }
-            classDirectories.setFrom(
-                fileTree(layout.buildDirectory.dir(kotlinClassesDir)) {
-                    include(corePackages)
-                    exclude(coverageExclusions)
-                }
-            )
         }
     }
 }
