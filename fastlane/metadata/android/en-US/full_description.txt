@@ -1,0 +1,16 @@
+Beans on Droid is an unofficial companion app for hmans/beans, the flat-file
+issue tracker that stores issues as Markdown files with YAML frontmatter inside
+your git repository. It is not affiliated with or endorsed by the beans project.
+
+Add a repository by its HTTPS clone URL, optionally with a personal access token
+for private repositories. The app makes a shallow, read-only clone into private
+storage and indexes every bean it finds. Browse the full list, filter by status,
+type and tag, search across titles and bodies, and open a bean to read its
+rendered Markdown body and follow links to related beans.
+
+Pull to refresh fetches the latest commit and resets to it. The app never writes
+to your repository.
+
+Tokens are stored encrypted with an Android Keystore-backed key. The app uses
+plain git over HTTPS, so it works with any host, and it contains no analytics,
+no ads and no proprietary dependencies.

@@ -1,0 +1,1 @@
+Initial release. Read-only browsing of beans from HTTPS git repositories.

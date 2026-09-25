@@ -1,0 +1,52 @@
+schema: spec-driven
+
+context: |
+  Beans on Droid: an unofficial, read-only Android app for browsing issues
+  ("beans") from hmans/beans flat-file issue trackers stored in git repos.
+
+  Full Phase 1 specification: docs/BRIEFING.md. Repo conventions: AGENTS.md.
+  Autonomous run loop: docs/AUTONOMOUS-BUILD.md.
+
+  Tech stack: Kotlin, Jetpack Compose, Material 3, Navigation Compose, single
+  activity, coroutines, a ViewModel per screen. JGit for clone and fetch.
+  DataStore for the repo list, Android Keystore-backed encryption for tokens.
+  Gradle with a version catalog at gradle/libs.versions.toml. minSdk 26,
+  applicationId io.github.mipmip.beansondroid.
+
+  Layers, kept strictly separate so Phase 2 (editing via commit and push) only
+  extends the data layer:
+    RepoStore  clone, refresh, delete, expose the working directory per repo
+    BeanParser file to Bean data class; the only code that knows the format
+    BeanIndex  in-memory list with filter and search, rebuilt on refresh
+    UI         talks only to ViewModels
+
+  Build environment is a nix flake, plain nix with genAttrs, no flake-utils.
+  Version control is jj. Commits are authored by Pim Snel with no attribution
+  trailers.
+
+  Hard constraints: FOSS dependencies only, no Play Services, Firebase,
+  Crashlytics, analytics or ads, no prebuilt jars in the repo, Apache-2.0,
+  F-Droid ready. No comments in code.
+
+  Each epic in .beans/ becomes one change here. Every change links back to its
+  bean.
+
+rules:
+  proposal:
+    - Link the originating bean by id in the first section
+    - Include a Non-goals section
+    - Name every dependency the change introduces and state that it is FOSS
+  tasks:
+    - Cover every acceptance checkbox in the originating bean
+    - Include the tests for this change as explicit tasks, not as an afterthought
+    - Keep each task independently verifiable
+
+operations:
+  apply:
+    guidance:
+      - Check off a task only after it actually lands and its test passes
+      - Never weaken a test or a coverage floor to make the gate pass
+  archive:
+    guidance:
+      - Ship with ./scripts/ship-change.sh, never by archiving by hand
+      - After archiving, set the bean to completed and add its openspec-link
