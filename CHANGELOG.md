@@ -13,3 +13,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Reproducible nix dev shell with JDK 17, Android SDK 37 and Gradle.
 - Android app skeleton: Kotlin, Compose, Material 3, minSdk 26, that builds
   and launches.
+- Coverage gate: 70 percent overall and 80 percent on the bean and index
+  packages, enforced before every ship.

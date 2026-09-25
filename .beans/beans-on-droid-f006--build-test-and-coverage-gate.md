@@ -1,11 +1,11 @@
 ---
 # beans-on-droid-f006
 title: Build, test and coverage gate
-status: todo
+status: in-progress
 type: epic
 priority: normal
 created_at: 2026-09-25T15:14:34Z
-updated_at: 2026-09-25T15:14:34Z
+updated_at: 2026-09-25T17:54:13Z
 parent: beans-on-droid-hsk9
 ---
 

@@ -4,7 +4,7 @@
 # The quality gate for this project. Run on its own, or via ship-change.sh.
 #
 #   1. nix flake check         always
-#   2. gradle build/test/lint  as soon as ./gradlew exists
+#   2. gradle build/test/lint/coverage  as soon as ./gradlew exists
 #
 # The gradle half runs inside `nix develop` so the JDK and Android SDK come
 # from the flake rather than from whatever happens to be on PATH. Gradle needs
@@ -24,10 +24,11 @@ if [[ ! -x ./gradlew ]]; then
   exit 0
 fi
 
-echo "==> gate [2/2] gradle build, test, lint"
+echo "==> gate [2/2] gradle build, test, lint, coverage"
 nix develop --command ./gradlew \
   assembleDebug \
   test \
-  lint
+  lint \
+  jacocoCoverageVerification
 
 echo "==> gate passed"
