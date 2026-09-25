@@ -1,12 +1,13 @@
 ---
 # beans-on-droid-eroh
 title: Bean list screen
-status: in-progress
+status: completed
 type: epic
 priority: normal
 created_at: 2026-09-25T15:14:34Z
-updated_at: 2026-09-25T18:50:28Z
+updated_at: 2026-09-25T18:55:04Z
 parent: beans-on-droid-md1e
+openspec-link: openspec/changes/archive/2026-09-25-bean-list-screen
 ---
 
 All beans for the active repo, with filters and search. Pull to refresh triggers fetch plus hard reset and a reindex.
