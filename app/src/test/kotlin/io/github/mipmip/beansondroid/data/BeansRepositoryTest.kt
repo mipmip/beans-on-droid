@@ -65,7 +65,7 @@ class BeansRepositoryTest {
 
     @Test
     fun aFailedCloneDoesNotLeaveTheRepositoryInTheList() = runBlocking {
-        val result = beans.addRepository("https://beans.invalid/x.git", "", null)
+        val result = beans.addRepository("http://127.0.0.1:1/x.git", "", null)
         assertTrue(result.errorOrNull() is RepoError.Network)
         assertTrue(catalog.current().repos.isEmpty())
         assertTrue(beans.indexState.value is IndexState.Failed)

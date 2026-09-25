@@ -100,13 +100,13 @@ class AppViewModelTest {
     @Test
     fun aFailedCloneLeavesTheFormUsable() = runTest(dispatcher) {
         val model = model()
-        model.onAddRepoUrlChanged("https://beans.invalid/x.git")
+        model.onAddRepoUrlChanged("http://127.0.0.1:1/x.git")
         model.addRepository()
         advanceUntilIdle()
 
         assertFalse(model.addRepo.value.busy)
         assertTrue(model.addRepo.value.error!!.contains("Could not reach"))
-        assertEquals("https://beans.invalid/x.git", model.addRepo.value.url)
+        assertEquals("http://127.0.0.1:1/x.git", model.addRepo.value.url)
     }
 
     @Test

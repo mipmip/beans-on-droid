@@ -93,7 +93,7 @@ class PersistenceTest {
     @Test
     fun repositoryListSurvivesANewRegistryOverTheSameFile() = runBlocking {
         val file = File(scratch, "repos.preferences_pb")
-        val vault = InMemoryTokenVault()
+        val vault = io.github.mipmip.beansondroid.FakeTokenVault()
 
         RepoRegistry(storeAt(file), vault).add("https://example.test/one.git", "", null)
         closeAll()
@@ -106,7 +106,7 @@ class PersistenceTest {
 
     @Test
     fun listIsObservable() = runBlocking {
-        val registry = RepoRegistry(store("repos"), InMemoryTokenVault())
+        val registry = RepoRegistry(store("repos"), io.github.mipmip.beansondroid.FakeTokenVault())
         assertTrue(registry.repos.first().repos.isEmpty())
         registry.add("https://example.test/one.git", "One", null)
         assertEquals(1, registry.repos.first().repos.size)
@@ -135,7 +135,7 @@ class PersistenceTest {
 
     @Test
     fun activeRepositoryIsTrackedAcrossAddAndSwitch() = runBlocking {
-        val registry = RepoRegistry(store("repos"), InMemoryTokenVault())
+        val registry = RepoRegistry(store("repos"), io.github.mipmip.beansondroid.FakeTokenVault())
         val one = registry.add("https://example.test/one.git", "One", null)
         val two = registry.add("https://example.test/two.git", "Two", null)
         assertEquals(one.id, registry.current().activeId)

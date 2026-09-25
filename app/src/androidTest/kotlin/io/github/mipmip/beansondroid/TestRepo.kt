@@ -2,7 +2,7 @@ package io.github.mipmip.beansondroid
 
 import io.github.mipmip.beansondroid.data.BeansRepository
 import io.github.mipmip.beansondroid.repo.RepoStore
-import io.github.mipmip.beansondroid.store.InMemoryTokenVault
+import io.github.mipmip.beansondroid.store.TokenVault
 import io.github.mipmip.beansondroid.store.RepoCatalog
 import io.github.mipmip.beansondroid.store.RepoConfig
 import io.github.mipmip.beansondroid.store.RepoList
@@ -12,9 +12,23 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import org.eclipse.jgit.api.Git
 import java.io.File
 
+class FakeTokenVault : TokenVault {
+    private val tokens = mutableMapOf<String, String>()
+
+    override suspend fun put(id: String, token: String) {
+        tokens[id] = token
+    }
+
+    override suspend fun get(id: String): String? = tokens[id]
+
+    override suspend fun remove(id: String) {
+        tokens.remove(id)
+    }
+}
+
 class TestCatalog : RepoCatalog {
     private val state = MutableStateFlow(RepoList())
-    private val vault = InMemoryTokenVault()
+    private val vault = FakeTokenVault()
 
     override val repos: Flow<RepoList> = state
 

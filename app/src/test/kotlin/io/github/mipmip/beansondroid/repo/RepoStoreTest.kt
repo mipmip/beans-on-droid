@@ -133,14 +133,14 @@ class RepoStoreTest {
 
     @Test
     fun cloneOfAnUnreachableUrlFailsAsNetwork() {
-        val result = runBlocking { store.clone("bad", "https://beans.invalid/does-not-exist.git") }
+        val result = runBlocking { store.clone("bad", "http://127.0.0.1:1/does-not-exist.git") }
         val error = result.errorOrNull()
         assertTrue("$error", error is RepoError.Network)
     }
 
     @Test
     fun failedCloneLeavesNothingBehind() {
-        runBlocking { store.clone("bad", "https://beans.invalid/does-not-exist.git") }
+        runBlocking { store.clone("bad", "http://127.0.0.1:1/does-not-exist.git") }
         assertFalse(store.workingDir("bad").exists())
     }
 

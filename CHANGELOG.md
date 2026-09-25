@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the beans were stale.
 - The bean detail view claimed a bean was missing whenever the index was not
   loaded, including before any repository was opened.
+- Four unit tests depended on a hostname failing to resolve, so the suite could
+  behave differently on a network with a wildcard DNS resolver.
 
 - The coverage gate measured only the two core packages, so it reported
   success while overall coverage was below its own floor.
