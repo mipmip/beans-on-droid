@@ -1,12 +1,13 @@
 ---
 # beans-on-droid-hjxa
 title: F-Droid readiness
-status: in-progress
+status: completed
 type: epic
 priority: normal
 created_at: 2026-09-25T15:14:34Z
-updated_at: 2026-09-25T19:57:26Z
+updated_at: 2026-09-25T20:02:18Z
 parent: beans-on-droid-haij
+openspec-link: openspec/changes/archive/2026-09-25-fdroid-readiness
 ---
 
 The hard requirements from the briefing.

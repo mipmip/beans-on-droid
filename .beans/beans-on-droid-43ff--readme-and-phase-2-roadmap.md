@@ -1,11 +1,11 @@
 ---
 # beans-on-droid-43ff
 title: README and Phase 2 roadmap
-status: todo
+status: in-progress
 type: epic
 priority: normal
 created_at: 2026-09-25T15:14:34Z
-updated_at: 2026-09-25T15:14:34Z
+updated_at: 2026-09-25T20:03:02Z
 parent: beans-on-droid-haij
 ---
 

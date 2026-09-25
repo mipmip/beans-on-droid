@@ -56,3 +56,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - F-Droid metadata with screenshots captured from a real run, and a dependency
   licence audit in docs/fdroid.md.
 - The Gradle distribution is now pinned by SHA-256.
+- A README covering what the app is, how to build it, how to add a repository
+  and a token, the JGit constraint at minSdk 26, and the Phase 2 roadmap.
