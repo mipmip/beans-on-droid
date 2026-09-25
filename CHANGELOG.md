@@ -10,3 +10,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Project scaffolding: OpenSpec, beans, nix flake, quality gate, ship script.
+- Reproducible nix dev shell with JDK 17, Android SDK 36 and Gradle.

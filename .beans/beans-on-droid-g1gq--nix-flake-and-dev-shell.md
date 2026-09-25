@@ -1,11 +1,11 @@
 ---
 # beans-on-droid-g1gq
 title: Nix flake and dev shell
-status: todo
+status: in-progress
 type: epic
 priority: normal
 created_at: 2026-09-25T15:14:34Z
-updated_at: 2026-09-25T15:14:34Z
+updated_at: 2026-09-25T17:39:02Z
 parent: beans-on-droid-hsk9
 ---
 
