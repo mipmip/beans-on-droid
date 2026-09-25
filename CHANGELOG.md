@@ -35,3 +35,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   list, a bean's detail and the repository screen, and clone URL validation.
 - Repository screen: add by HTTPS URL with an optional token, switch between
   repositories, and remove one after a confirmation.
+- Bean list: search over title, body and id, filters built from the statuses,
+  types and tags the repository actually uses, and pull to refresh.

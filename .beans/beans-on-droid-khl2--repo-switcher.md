@@ -1,12 +1,13 @@
 ---
 # beans-on-droid-khl2
 title: Repo switcher
-status: in-progress
+status: completed
 type: epic
 priority: normal
 created_at: 2026-09-25T15:14:34Z
-updated_at: 2026-09-25T18:45:52Z
+updated_at: 2026-09-25T18:50:28Z
 parent: beans-on-droid-md1e
+openspec-link: openspec/changes/archive/2026-09-25-repo-switcher
 ---
 
 Add a repo by HTTPS URL with an optional token, remove a repo, and switch the active one.

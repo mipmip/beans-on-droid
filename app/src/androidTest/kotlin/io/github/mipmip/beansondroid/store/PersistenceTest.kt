@@ -8,7 +8,8 @@ import androidx.test.platform.app.InstrumentationRegistry
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.job
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -38,8 +39,7 @@ class PersistenceTest {
 
     @After
     fun tearDown() {
-        scopes.forEach { it.cancel() }
-        scopes.clear()
+        closeAll()
         scratch.deleteRecursively()
     }
 
@@ -52,8 +52,8 @@ class PersistenceTest {
     private fun store(name: String): DataStore<Preferences> =
         storeAt(File(scratch, "$name.preferences_pb"))
 
-    private fun closeAll() {
-        scopes.forEach { it.cancel() }
+    private fun closeAll() = runBlocking {
+        scopes.forEach { it.coroutineContext.job.cancelAndJoin() }
         scopes.clear()
     }
 
