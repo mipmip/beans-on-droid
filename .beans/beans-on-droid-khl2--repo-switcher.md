@@ -1,11 +1,11 @@
 ---
 # beans-on-droid-khl2
 title: Repo switcher
-status: todo
+status: in-progress
 type: epic
 priority: normal
 created_at: 2026-09-25T15:14:34Z
-updated_at: 2026-09-25T15:14:34Z
+updated_at: 2026-09-25T18:45:52Z
 parent: beans-on-droid-md1e
 ---
 

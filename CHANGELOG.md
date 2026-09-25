@@ -33,3 +33,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Android Keystore key and removed together with their repository.
 - App shell: one observable application state, navigation between the bean
   list, a bean's detail and the repository screen, and clone URL validation.
+- Repository screen: add by HTTPS URL with an optional token, switch between
+  repositories, and remove one after a confirmation.
