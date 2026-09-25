@@ -53,3 +53,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - End-to-end tests driving the whole app against a git repository served over
   HTTP, including authentication and pull to refresh.
 - Measured performance at 600 beans, recorded in docs/performance.md.
+- F-Droid metadata with screenshots captured from a real run, and a dependency
+  licence audit in docs/fdroid.md.
+- The Gradle distribution is now pinned by SHA-256.
