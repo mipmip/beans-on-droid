@@ -15,19 +15,33 @@ private val Context.repoDataStore: DataStore<Preferences> by preferencesDataStor
 
 private val REPOS = stringPreferencesKey("repos")
 
+interface RepoCatalog {
+    val repos: Flow<RepoList>
+
+    suspend fun current(): RepoList
+
+    suspend fun add(url: String, label: String, token: String?): RepoConfig
+
+    suspend fun remove(id: String)
+
+    suspend fun activate(id: String)
+
+    suspend fun tokenFor(id: String): String?
+}
+
 class RepoRegistry(
     private val dataStore: DataStore<Preferences>,
     private val vault: TokenVault,
-) {
+) : RepoCatalog {
 
     constructor(context: Context, vault: TokenVault) :
         this(context.applicationContext.repoDataStore, vault)
 
-    val repos: Flow<RepoList> = dataStore.data.map { prefs -> decode(prefs[REPOS]) }
+    override val repos: Flow<RepoList> = dataStore.data.map { prefs -> decode(prefs[REPOS]) }
 
-    suspend fun current(): RepoList = repos.first()
+    override suspend fun current(): RepoList = repos.first()
 
-    suspend fun add(url: String, label: String, token: String?): RepoConfig {
+    override suspend fun add(url: String, label: String, token: String?): RepoConfig {
         val trimmed = url.trim()
         val id = repoIdFor(trimmed)
         if (!token.isNullOrBlank()) vault.put(id, token)
@@ -41,14 +55,14 @@ class RepoRegistry(
         return config
     }
 
-    suspend fun remove(id: String) {
+    override suspend fun remove(id: String) {
         vault.remove(id)
         update { it.remove(id) }
     }
 
-    suspend fun activate(id: String) = update { it.activate(id) }
+    override suspend fun activate(id: String) = update { it.activate(id) }
 
-    suspend fun tokenFor(id: String): String? = vault.get(id)
+    override suspend fun tokenFor(id: String): String? = vault.get(id)
 
     private suspend fun update(transform: (RepoList) -> RepoList) {
         dataStore.edit { prefs ->

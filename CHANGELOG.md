@@ -31,3 +31,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   network or not-a-beans-repository.
 - Repository list persisted in DataStore, with tokens encrypted by an
   Android Keystore key and removed together with their repository.
+- App shell: one observable application state, navigation between the bean
+  list, a bean's detail and the repository screen, and clone URL validation.
