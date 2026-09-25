@@ -1,12 +1,13 @@
 ---
 # beans-on-droid-64w9
 title: BeanIndex with filter and search
-status: in-progress
+status: completed
 type: epic
 priority: normal
 created_at: 2026-09-25T15:14:34Z
-updated_at: 2026-09-25T18:07:38Z
+updated_at: 2026-09-25T18:09:35Z
 parent: beans-on-droid-rhgf
+openspec-link: openspec/changes/archive/2026-09-25-bean-index
 ---
 
 In-memory index rebuilt on clone and refresh. Queries for status, type and tag filters plus text search over title and body.

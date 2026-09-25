@@ -24,16 +24,26 @@
 
       forAllSystems = f: nixpkgs.lib.genAttrs systems (system: f (pkgsFor system));
 
-      androidFor = pkgs: pkgs.androidenv.composeAndroidPackages {
+      sdkArgs = {
         cmdLineToolsVersion = "22.0";
         platformToolsVersion = "37.0.1";
         buildToolsVersions = [ "37.0.0" ];
-        platformVersions = [ "37.0" "36" ];
-        includeEmulator = false;
-        includeSystemImages = false;
+        platformVersions = [ "37.0" "36" "26" ];
         includeSources = false;
         includeNDK = false;
       };
+
+      androidFor = pkgs: pkgs.androidenv.composeAndroidPackages (sdkArgs // {
+        includeEmulator = false;
+        includeSystemImages = false;
+      });
+
+      androidWithEmulatorFor = pkgs: pkgs.androidenv.composeAndroidPackages (sdkArgs // {
+        includeEmulator = true;
+        includeSystemImages = true;
+        systemImageTypes = [ "default" ];
+        abiVersions = [ "x86_64" ];
+      });
     in
     {
       devShells = forAllSystems (pkgs:
@@ -62,6 +72,29 @@
               echo "beans-on-droid dev shell: jdk $(javac -version 2>&1), sdk at $ANDROID_SDK_ROOT"
             '';
           };
+
+          emulator =
+            let
+              emuSdk = (androidWithEmulatorFor pkgs).androidsdk;
+            in
+            pkgs.mkShell {
+              packages = [
+                pkgs.jdk17
+                emuSdk
+                pkgs.git
+                pkgs.jq
+              ];
+
+              JAVA_HOME = "${pkgs.jdk17}";
+              ANDROID_HOME = "${emuSdk}/libexec/android-sdk";
+              ANDROID_SDK_ROOT = "${emuSdk}/libexec/android-sdk";
+
+              shellHook = ''
+                export GRADLE_OPTS="-Dorg.gradle.project.android.aapt2FromMavenOverride=$ANDROID_SDK_ROOT/build-tools/37.0.0/aapt2"
+                export ANDROID_AVD_HOME="''${ANDROID_AVD_HOME:-$PWD/.avd}"
+                echo "beans-on-droid emulator shell: sdk at $ANDROID_SDK_ROOT, avds in $ANDROID_AVD_HOME"
+              '';
+            };
         });
 
       checks = forAllSystems (pkgs: {
@@ -70,7 +103,7 @@
             nativeBuildInputs = [ pkgs.shellcheck ];
             src = ./scripts;
           } ''
-          shellcheck "$src"/*.sh
+              shellcheck "$src"/*.sh
           touch "$out"
         '';
 
@@ -87,3 +120,4 @@
       formatter = forAllSystems (pkgs: pkgs.nixpkgs-fmt);
     };
 }
+

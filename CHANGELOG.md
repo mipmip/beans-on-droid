@@ -21,3 +21,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ones, and skips a malformed file instead of failing the whole repository.
 - Bean index: filter by status, type and tag, text search over title, body and
   id, and relationship resolution in both directions.
+- Repository store: shallow clone over HTTPS with an optional token, refresh as
+  fetch plus hard reset, delete, and failures reported as authentication,
+  network or not-a-beans-repository.
