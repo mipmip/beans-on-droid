@@ -50,3 +50,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   unrecognised ones, and tappable links to related beans.
 - Files the parser could not read are listed by name with a reason, not just
   counted.
+- End-to-end tests driving the whole app against a git repository served over
+  HTTP, including authentication and pull to refresh.

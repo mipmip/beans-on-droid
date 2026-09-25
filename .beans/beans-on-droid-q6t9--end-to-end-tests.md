@@ -1,11 +1,11 @@
 ---
 # beans-on-droid-q6t9
 title: End to end tests
-status: todo
+status: in-progress
 type: epic
 priority: normal
 created_at: 2026-09-25T15:14:34Z
-updated_at: 2026-09-25T15:14:34Z
+updated_at: 2026-09-25T19:33:48Z
 parent: beans-on-droid-haij
 ---
 

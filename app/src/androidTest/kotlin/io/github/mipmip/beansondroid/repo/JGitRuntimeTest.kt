@@ -70,6 +70,31 @@ class JGitRuntimeTest {
     }
 
     @Test
+    fun shallowCloneAndRefreshWorkOverHttp() {
+        val remoteDir = remote()
+        val server = io.github.mipmip.beansondroid.GitHttpServer(remoteDir).start()
+        try {
+            val cloned = runBlocking { store.clone("http", server.url) }
+            assertTrue("$cloned", cloned is RepoResult.Success)
+            assertTrue(File(store.workingDir("http"), ".beans/x-aaaa--on-device.md").isFile)
+
+            Git.open(remoteDir).use { git ->
+                File(remoteDir, ".beans/x-cccc--over-http.md").writeText(
+                    "---\ntitle: Over http\nstatus: todo\ntype: task\n---\n",
+                )
+                git.add().addFilepattern(".").call()
+                git.commit().setMessage("over http").setSign(false).call()
+            }
+
+            val refreshed = runBlocking { store.refresh("http") }
+            assertTrue("$refreshed", refreshed is RepoResult.Success)
+            assertTrue(File(store.workingDir("http"), ".beans/x-cccc--over-http.md").isFile)
+        } finally {
+            server.stop()
+        }
+    }
+
+    @Test
     fun beansAreParsedFromAClonedRepositoryOnDevice() {
         runBlocking { store.clone("device", remote().toURI().toString()) }
         val beanDir = store.beanDirectory("device").valueOrNull()!!
