@@ -1,12 +1,13 @@
 ---
 # beans-on-droid-c85j
 title: 'RepoStore: clone, refresh, delete'
-status: in-progress
+status: completed
 type: epic
 priority: normal
 created_at: 2026-09-25T15:14:34Z
-updated_at: 2026-09-25T18:10:14Z
+updated_at: 2026-09-25T18:27:43Z
 parent: beans-on-droid-rhgf
+openspec-link: openspec/changes/archive/2026-09-25-repo-store
 ---
 
 JGit-backed storage of one working copy per repo in app-private storage. Shallow clone at depth 1. Refresh is fetch plus hard reset to the remote branch, never a merge, because the app never writes.

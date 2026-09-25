@@ -24,3 +24,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Repository store: shallow clone over HTTPS with an optional token, refresh as
   fetch plus hard reset, delete, and failures reported as authentication,
   network or not-a-beans-repository.
+- Repository list persisted in DataStore, with tokens encrypted by an
+  Android Keystore key and removed together with their repository.
