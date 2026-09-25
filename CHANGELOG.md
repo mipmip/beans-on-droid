@@ -19,3 +19,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   taken from the real hmans/beans repository.
 - Bean parser: reads every documented frontmatter field, keeps unrecognised
   ones, and skips a malformed file instead of failing the whole repository.
+- Bean index: filter by status, type and tag, text search over title, body and
+  id, and relationship resolution in both directions.

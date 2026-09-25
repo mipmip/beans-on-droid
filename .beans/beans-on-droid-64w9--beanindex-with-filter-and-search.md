@@ -1,11 +1,11 @@
 ---
 # beans-on-droid-64w9
 title: BeanIndex with filter and search
-status: todo
+status: in-progress
 type: epic
 priority: normal
 created_at: 2026-09-25T15:14:34Z
-updated_at: 2026-09-25T15:14:34Z
+updated_at: 2026-09-25T18:07:38Z
 parent: beans-on-droid-rhgf
 ---
 
