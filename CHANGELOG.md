@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- The bean list sorted by the `order` field first, which is the beans tool's
+  manual drag key and never its primary key, so statuses interleaved and the
+  list read as random. It now matches the tool: status, order, priority, type,
+  title.
 - A failed refresh replaced the beans already on screen with an error page,
   instead of keeping the last fetched copy.
 - Recreating a screen after a failed refresh silently cleared the warning that
@@ -17,12 +21,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   loaded, including before any repository was opened.
 - Four unit tests depended on a hostname failing to resolve, so the suite could
   behave differently on a network with a wildcard DNS resolver.
-
 - The coverage gate measured only the two core packages, so it reported
   success while overall coverage was below its own floor.
 
 ### Added
 
+- The bean list can be sorted by created, updated, status, priority, type,
+  title or id, in either direction, and remembers the choice per repository.
+- The bean list nests children under their parents. Choosing a sort or typing a
+  search flattens it, and a parent excluded by a filter stays visible as
+  context without being counted as a match.
+- Raised and lowered priorities are marked in the list.
 - Project scaffolding: OpenSpec, beans, nix flake, quality gate, ship script.
 - Reproducible nix dev shell with JDK 17, Android SDK 37 and Gradle.
 - Android app skeleton: Kotlin, Compose, Material 3, minSdk 26, that builds

@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import io.github.mipmip.beansondroid.data.BeansRepository
 import io.github.mipmip.beansondroid.data.IndexState
 import io.github.mipmip.beansondroid.index.BeanQuery
+import io.github.mipmip.beansondroid.index.BeanSort
+import io.github.mipmip.beansondroid.index.SortDirection
 import io.github.mipmip.beansondroid.repo.RepoError
 import io.github.mipmip.beansondroid.repo.RepoResult
 import io.github.mipmip.beansondroid.store.RepoList
@@ -50,6 +52,25 @@ class AppViewModel(
 
     init {
         viewModelScope.launch { withContext(io) { repository.loadActiveIfNeeded() } }
+        viewModelScope.launch {
+            repository.repos.collect { list ->
+                val active = list.active ?: return@collect
+                val current = _query.value
+                if (active.sort != current.sort || active.direction != current.direction) {
+                    _query.value = current.copy(sort = active.sort, direction = active.direction)
+                }
+            }
+        }
+    }
+
+    fun setSort(sort: BeanSort, direction: SortDirection? = null) {
+        _query.value = _query.value.copy(sort = sort, direction = direction)
+        viewModelScope.launch { withContext(io) { repository.setSort(sort, direction) } }
+    }
+
+    fun toggleSortDirection() {
+        val current = _query.value
+        setSort(current.sort, current.effectiveDirection.reversed())
     }
 
     fun setTerm(term: String) {
@@ -65,7 +86,12 @@ class AppViewModel(
     fun toggleArchived() = _query.update { it.copy(includeArchived = !it.includeArchived) }
 
     fun clearFilters() {
-        _query.value = BeanQuery(term = _query.value.term)
+        val current = _query.value
+        _query.value = BeanQuery(
+            term = current.term,
+            sort = current.sort,
+            direction = current.direction,
+        )
     }
 
     fun onAddRepoUrlChanged(url: String) = _addRepo.update { it.copy(url = url, error = null) }

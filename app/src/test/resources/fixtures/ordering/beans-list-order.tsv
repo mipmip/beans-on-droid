@@ -1,0 +1,254 @@
+beans-5txp	in-progress			epic	Codebase quality improvements
+beans-huwr	in-progress		normal	bug	Agent sessions fail to edit Claude config files (.claude/rules, CLAUDE.md)
+beans-2bbc	in-progress			feature	Quick reply suggestions after agent turn
+beans-oyic	todo	V	normal	epic	beans-serve code quality improvements
+beans-l3jg	todo	VF	normal	feature	Add tag editing UI to TUI
+beans-1mal	todo	VN	normal	feature	Expand beans prime with agent-specific output
+beans-0ajg	todo	VV	normal	task	beans complete command
+beans-jvkq	todo	VVa	normal	task	beans start command
+beans-m364	todo	VVd	normal	task	beans progress command
+beans-p17z	todo	VVg	normal	task	beans next command
+beans-18db	todo	VVt	normal	task	beans milestones command
+beans-r780	todo	VVv	normal	task	beans scrap command
+beans-zyfk	todo	Vk	normal	task	Investigate Codex integration
+beans-oman	todo	Vs	normal	task	Investigate Crush integration
+beans-5ucr	todo	Vy	normal	task	Investigate Warp integration
+beans-us37	todo	Vz	normal	task	Investigate Zed integration
+beans-j7hd	todo	k	normal	task	Research Claude Code plugin/marketplace
+beans-digu	todo	s	normal	feature	Support custom properties on beans
+beans-mmyp	todo	w	normal	epic	Workflow CLI commands
+beans-gkgc	todo	z	normal	feature	Allow attaching images to chat messages
+beans-ntus	todo	zV	normal	feature	Archive button on completed beans
+beans-7cpp	todo	zk	normal	feature	Display context usage in agent chat
+beans-j4rc	todo	zw	normal	feature	Taller chat input composer for longer messages
+beans-jy9h	todo	zy	high	task	Add input validation to GraphQL resolvers
+beans-oe8n	todo	zzk	normal	epic	Security hardening
+beans-98pg	todo	zzs	normal	task	Investigate Cursor integration
+beans-43wl	todo	zzy	low	task	Add HTTP request and WebSocket connection limits
+beans-mezh	todo	zzz	normal	feature	Add agent.enable setting to gate agent chat visibility
+beans-l4ag	todo	zzzV	normal	feature	Auto-reload config file on changes and push updates to frontend
+beans-y0by	todo		high	bug	Add subscription error recovery in frontend stores
+beans-yi9w	todo		high	bug	Consolidate agent store subscription ownership
+beans-26we	todo		high	bug	Fix TOCTOU race in GraphQL mutation validation
+beans-b5gf	todo		high	task	Add comprehensive GraphQL resolver tests
+beans-omee	todo		high	task	Build incoming link index to replace O(n) FindIncomingLinks scan
+beans-p2pw	todo		normal	bug	Fix navigator.platform access at module scope in FilterInput
+beans-4mua	todo		normal	bug	Fix suppressed a11y warnings in frontend components
+beans-dy9x	todo			feature	Replace ChangesStore polling with WebSocket subscription
+beans-tx7i	todo			task	Add frontend unit tests for stores and key logic
+beans-rren	todo		normal	task	Avoid disk I/O while holding write lock in Core.Update()
+beans-kpvs	todo			task	Centralize ID normalization logic
+beans-541b	todo		normal	task	Consolidate duplicate ETag error types
+beans-r66y	todo			task	Deduplicate ETagMismatchError type
+beans-vffa	todo			task	Improve error handling and add structured logging
+beans-7u0s	todo		normal	task	Improve test coverage for agent manager and GraphQL subscriptions
+beans-fydu	todo		normal	task	Replace findMainBeanFile directory scan with in-memory lookup
+beans-1edn	todo		low	task	Extract duplicate GraphQL mutation definitions to shared modules
+beans-r7oc	todo		low	task	Improve subscription backpressure handling
+beans-6h8m	todo		low	task	Share color definitions between frontend and backend
+beans-8olg	draft	V	normal	feature	Add --unblocked filter to find actionable beans
+beans-ikw9	draft	Y	normal	feature	beans release - Release management integration
+beans-qq9i	draft	c	normal	feature	CLI subscription support for beans query
+beans-iggk	draft	k	normal	feature	Add beans graph command for relationship visualization
+beans-wxl4	draft	u	normal	feature	Experiment with integrating agent UI into web UI using ACP
+beans-6hbt	draft	w	normal	feature	Generate embeddings for beans using OpenAI
+beans-j03e	draft	zV	normal	feature	Show relationship counts in list output
+beans-jwy7	draft	zk	normal	feature	Use semantic markdown sections in bean bodies
+beans-kp3h	draft	zs	normal	feature	Wrap beans in an MCP server
+beans-qc6g	draft	zw	normal	feature	Integrate Agent Communication Protocol (ACP) as agent communication layer
+beans-x38m	draft	zy	low	feature	Sandboxed agent execution
+beans-ycov	completed	7	normal	feature	URL-based routing for UI sections
+beans-8k9b	completed	F	normal	feature	Runtime state layer for beans-serve
+beans-auyh	completed	V	normal	bug	Filter inappropriate words from generated bean IDs
+beans-32ue	completed	V	normal	bug	Fix: beancore picks up non-bean .md files from worktrees/ and conversations/
+beans-6piw	completed	V	low	task	Validate localStorage values in frontend
+beans-na7o	completed	V07	normal	feature	Implicit/explicit blocking and unified naming for inherited state
+beans-t0tv	completed	V0F	normal	feature	Refactor TUI to two-column layout with hierarchical navigation
+beans-now5	completed	V0N	normal	feature	Toggle Ask/Yolo mode in agent chat
+beans-bk5e	completed	V0V	normal	feature	Agent chat: plan mode toggle
+beans-lbjp	completed	V0g	normal	feature	beans web - Web UI server
+beans-f11p	completed	V1c	normal	milestone	Milestone 0.4.0
+beans-2cak	completed	V1u	normal	feature	Agent chat in worktree tabs
+beans-pg9a	completed	V1v	normal	bug	Interpret escape sequences in CLI body flags
+beans-lmgy	completed	V1x	normal	feature	Show createdAt and updatedAt in beans show
+beans-vsfv	completed	V1y	normal	feature	Add fractional indexing for manual bean ordering
+beans-o4g9	completed	V1y	normal	task	Build web UI: Bean list view
+beans-dtaq	completed	V1z	normal	feature	Add git worktree support with Start Work button
+beans-s1m0	completed	VV	normal	feature	Add left-hand planning agent chat pane
+beans-4zsu	completed	Vc	normal	task	Add comments to generated .beans.yml config file
+beans-d91u	completed	Vk	normal	feature	Add tabs to web app: Backlog and Board views
+beans-4ect	completed	Vs	normal	feature	Channel-based file watcher with typed events
+beans-58sx	completed	Vw	normal	feature	Dark theme with automatic system preference detection
+beans-7n3n	completed	Vy	normal	feature	Frontend beans store with Svelte 5 runes
+beans-kj41	completed	Vz	normal	feature	GraphQL subscriptions for bean changes
+beans-xfup	completed	c	normal	feature	Add project-level setting for default agent permission mode
+beans-eo0m	completed	c	normal	feature	Filter inappropriate words from generated workspace names!!
+beans-vyjw	completed	k	normal	feature	Add Iconify icons to agent message composer buttons
+beans-10tb	completed	k	normal	feature	Incremental beancore state updates
+beans-vts8	completed	s	normal	feature	Add sidebar navigation to web UI
+beans-bu4x	completed	s	normal	feature	Introduce SplitPane component for composable pane architecture
+beans-9744	completed	w	normal	feature	Rename createWorktree/removeWorktree to startWork/stopWork
+beans-qfbd	completed	w	normal	feature	Show type in beans show and TUI details view
+beans-43k6	completed	y	normal	feature	Subscription initial state support
+beans-zow9	completed	y	normal	task	Move bean, beancore, and config packages to public API
+beans-8lau	completed	z	normal	feature	Wire up GraphQL subscription in frontend store
+beans-amlk	completed	zV	normal	task	Build web UI: Bean detail view
+beans-z4ry	completed	zk	normal	task	Build web UI: Create/edit bean form
+beans-tax9	completed	zs	normal	feature	Drag and drop reordering in backlog view
+beans-sli4	completed	zs	normal	task	Embed web assets into Go binary
+beans-l5ot	completed	zw	normal	task	Implement beans serve command
+beans-04yk	completed	zy	normal	task	Implement GraphQL HTTP endpoint
+beans-w66d	completed	zz	high	task	Restrict CORS and WebSocket origins
+beans-60ln	completed	zz	normal	feature	Add interactive terminal pane to workspaces
+beans-xf78	completed	zz	normal	task	Implement GraphQL subscriptions for live updates
+beans-2e6i	completed	zzV	high	task	Sanitize markdown HTML output with DOMPurify
+beans-v3b9	completed	zzV	normal	feature	Display diff in agent chat when Write tool is used
+beans-v2cz	completed	zzV	normal	task	Refactor beans serve to use Gin framework
+beans-hww2	completed	zzk	normal	task	Set up Playwright e2e tests for web UI
+beans-eqk1	completed	zzs	normal	task	Set up SvelteKit project structure
+beans-wcnj	completed	zzw	normal	task	Add path traversal guards to file operations
+beans-unmv	completed	zzw	normal	task	Split into multiple CLI executables (beans, beans-serve, beans-tui)
+beans-9nfz	completed	zzy	normal	task	Worktree error logging and UI feedback
+beans-424n	completed	zzz	normal	feature	Add drag-and-drop reordering to backlog view
+beans-vdl7	completed	zzz	low	task	Use secure WebSocket protocol for HTTPS
+beans-6986	completed	zzzV	normal	bug	Entering plan mode should not require permission
+beans-b4zb	completed	zzzV	normal	bug	Persist tool summaries in conversation JSONL
+beans-gwoo	completed	zzzc	normal	task	Integrate Iconify for Tailwind CSS v4
+beans-3lqr	completed	zzzk	normal	bug	ExitPlanMode should not require permission after accepting plan
+beans-vbap	completed	zzzk	normal	feature	Image attachments in agent conversation
+beans-7v1e	completed	zzzk	normal	feature	Inherited status from parent beans
+beans-htnb	completed	zzzs	normal	bug	Fix agent chat Act mode permission handling
+beans-54a1	completed	zzzs	normal	bug	Plan mode confirmation should not show separate Approve + Act button
+beans-mh8t	completed	zzzw	normal	bug	Fix: Web UI not reflecting bean updates from external processes
+beans-63sz	completed	zzzw	normal	feature	Changes pane in web UI
+beans-indd	completed	zzzy	normal	bug	Suppress noisy logging for benign Claude API stream events
+beans-t6hr	completed	zzzy	normal	feature	Remove permissions system, simplify to Plan and Yolo modes
+beans-buwe	completed	zzzz	normal	feature	Activate bean filter input on Cmd-/ or Ctrl-/
+beans-ct2v	completed	zzzz	normal	feature	Rename Changes pane to Status and add workflow action buttons
+beans-v77a	completed	zzzzV	normal	feature	Add Clear button to agent conversations
+beans-q3nu	completed	zzzzV	normal	feature	Rich AskUserQuestion UI for agent chat
+beans-sdjt	completed	zzzzk	normal	feature	Add Compact button and system status display to agent chat
+beans-t7um	completed	zzzzk	normal	feature	Visualize subagent activity in chat UI
+beans-iji0	completed	zzzzs	normal	feature	Client-side text filter for backlog and board views
+beans-799s	completed	zzzzs	normal	feature	Worktree: use configurable base ref instead of HEAD
+beans-ftqb	completed	zzzzw	normal	feature	Default to yolo mode
+beans-shc1	completed	zzzzw	normal	task	Move toolbar to full-width top bar in web UI
+beans-xvs4	completed	zzzzy	normal	feature	Inject bean context into agent conversation
+beans-yx0n	completed	zzzzy	normal	task	Rename default_permission_mode to default_mode
+beans-cbpd	completed	zzzzz	normal	feature	Permission approval UI for agent chat (act mode)
+beans-jpst	completed	zzzzz	normal	task	Change default worktree base_ref from origin/main to main
+beans-mx9n	completed	zzzzzV	normal	feature	Show progress animation on BeanCard when agent is running
+beans-fv19	completed	zzzzzk	normal	feature	Worktree agents should see main repo's beans
+beans-id9s	completed	zzzzzs	normal	task	Better tool display formatting for agent chat
+beans-mxdf	completed	zzzzzw	normal	task	Move worktrees inside .beans/worktrees/ and add .gitignore
+beans-36gu	completed		high	bug	Remove git worktree prune from worktree deletion
+beans-x7bd	completed		normal	epic	Move action buttons to server-side
+beans-3si7	completed			bug	Add bullet dot to thinking indicator in agent chat
+beans-kpxc	completed		normal	bug	Agent status not set back to Running when new turn starts within same process
+beans-uczx	completed		normal	bug	Agent still shows 'working' after AskUserQuestion
+beans-fwiw	completed		normal	bug	Auto-approve EnterPlanMode injects fake user message
+beans-xixh	completed		normal	bug	Auto-refresh PR status for all active workspaces in sidebar
+beans-v7zu	completed		normal	bug	Auto-scroll agent chat to bottom when action buttons are clicked
+beans-n2qq	completed		normal	bug	Auto-switch to new workspace after creation
+beans-e6or	completed		normal	bug	Autolink bean IDs in agent chat INFO and TOOL messages
+beans-zixm	completed		normal	bug	Decouple Run and Terminal panels in workspace view
+beans-rarr	completed		normal	bug	Direct navigation to workspace route redirects to planning
+beans-jak7	completed		normal	bug	DOMPurify strips target and rel attributes from markdown links
+beans-l6oa	completed		normal	bug	ExecuteAgentAction doesn't populate actionContext with PR/git state
+beans-lezv	completed		normal	bug	Fix bean detail view selection stored under wrong workspace key
+beans-j1lw	completed		normal	bug	Fix crash when sending image without text in agent chat
+beans-iv91	completed		normal	bug	Fix e2e tests failing on CI due to git default branch name
+beans-9df8	completed		normal	bug	Fix failing workspace e2e tests
+beans-uts2	completed		normal	bug	Fix frontend svelte-check warnings and errors
+beans-jmic	completed			bug	Fix integrate button leaving main worktree out of sync
+beans-wn9j	completed		normal	bug	Fix panic: send on closed channel in WorktreesChanged subscription
+beans-u7vj	completed		normal	bug	Fix plan mode race conditions
+beans-x0zh	completed		normal	bug	Fix subscription resolver dropping notifications under backpressure
+beans-swx6	completed		normal	bug	Fix workspace description generation: invalid -m flag
+beans-qrjj	completed		normal	bug	Fix workspace destroy warning e2e tests
+beans-mvh3	completed		normal	bug	Fix worktree agent merge: set receive.denyCurrentBranch before pushing to main
+beans-xjm9	completed		normal	bug	Fix worktree creation timeout causing orphaned worktrees
+beans-ukvl	completed		normal	bug	Fix worktree integrate: use atomic update-ref to prevent race conditions and remove config hack
+beans-wqlc	completed		normal	bug	Fix: All Changes diff should compare against worktree base branch, not remote upstream
+beans-3ijy	completed		normal	bug	Plan not shown after ExitPlanMode when ActMode is true
+beans-27wn	completed		normal	bug	PR status shows stale check state after agent push
+beans-gyar	completed		normal	bug	Render user messages in agent chat with markdown formatting
+beans-9s9h	completed		normal	bug	Replace optimistic workspace removal with destroying state indicator
+beans-m0fp	completed		normal	bug	Restore animate-pulse on subagent activity lines
+beans-gsf0	completed		normal	bug	Slow worktree sidebar loading due to synchronous PR lookups
+beans-r8mi	completed		normal	bug	Split PR button catch-all prompt into state-specific prompts
+beans-f4ny	completed		normal	bug	Split terminal panel: Shell and Run side-by-side, fix run WebSocket
+beans-81z2	completed		normal	bug	Trigger workspace description generation on first user message instead of first agent turn
+beans-edz5	completed		normal	bug	Use default text size for plans in PendingInteraction
+beans-g5m3	completed		normal	bug	Workspace description generation never fires
+beans-uk55	completed		normal	feature	@ mention file/directory attachment in agent chat
+beans-2j8h	completed		normal	feature	Add agent.enabled config setting to hide agent UI
+beans-wjnc	completed		normal	feature	Add BEANS_WORKSPACE_PORT env var to terminal sessions
+beans-let4	completed		normal	feature	Add Claude model chooser to agent composer
+beans-p5qk	completed		normal	feature	Add diff view to status pane
+beans-d92r	completed		normal	feature	Add workflow action buttons to bean detail view
+beans-7yh3	completed		normal	feature	Add worktree.integrate config option (local/pr)
+beans-03uj	completed		normal	feature	Add worktree.setup and worktree.run config options
+beans-0bb3	completed		normal	feature	Archive All button in Board view Completed column
+beans-7hek	completed		normal	feature	Archive icon on sidebar worktrees to destroy worktree
+beans-w7op	completed		normal	feature	Async worktree setup with status tracking
+beans-m667	completed		normal	feature	Auto-detect beans from worktree diffs
+beans-yvub	completed		normal	feature	Auto-focus agent chat composer on workspace navigation
+beans-mz4a	completed		normal	feature	Auto-generate workspace description after first agent message
+beans-9hcx	completed		normal	feature	Composer keyboard shortcuts: Shift-Tab for plan/act toggle, Escape for stop
+beans-85nf	completed		normal	feature	Configurable default effort level via .beans.yml
+beans-kjn2	completed		normal	feature	Create standalone worktrees from web UI
+beans-418q	completed		normal	feature	Decrypt/descramble text animation effect
+beans-betx	completed		normal	feature	Disable Integrate button when main has uncommitted changes
+beans-q84k	completed		normal	feature	Draggable sidebar separator
+beans-1rp5	completed		normal	feature	Dual-write bean mutations in git worktrees
+beans-zrn7	completed		normal	feature	Forge abstraction + GitHub PR integration
+beans-hnip	completed		normal	feature	Generate random workspace names instead of prompting
+beans-ou9t	completed		normal	feature	Move worktrees outside main repo to ~/.beans/worktrees/<project>/
+beans-6xao	completed		normal	feature	Open workspace in VS Code button
+beans-7hoc	completed		normal	feature	Optimistic user message in agent chat
+beans-pw99	completed		normal	feature	Replace model chooser with effort/thinking mode control
+beans-f05i	completed		normal	feature	Show PR status icons on workspace cards in sidebar
+beans-51mv	completed		normal	feature	Show project name instead of 'beans' in sidebar logo
+beans-fdej	completed		normal	feature	Simplify worktree setup: decouple worktrees from beans
+beans-a37d	completed		normal	feature	Sort workspaces by last agent activity
+beans-xa31	completed		normal	feature	Terminal sessions survive web app reload
+beans-jwqn	completed		normal	feature	Upgrade changes view: all changes vs upstream + tab switcher
+beans-m314	completed		normal	feature	Upgrade Run experience: separate terminal, Stop/Open buttons
+beans-3blw	completed		normal	feature	Warn on destroy workspace if uncommitted/unmerged changes
+beans-scm4	completed		normal	feature	Workspace remembers currently open bean
+beans-jmqu	completed		normal	feature	Worktree status info in changes panel
+beans-6hvi	completed		normal	task	Add AgentAction GraphQL type and query
+beans-tk4x	completed		normal	task	Add executeAgentAction mutation
+beans-o6kf	completed		normal	task	Add guardrails to agent system prompts to prevent auto-merging PRs
+beans-mjg6	completed		normal	task	Batch GitHub PR queries into single GraphQL call
+beans-94u1	completed		normal	task	Batch initial bean subscription into single snapshot event
+beans-8a1r	completed			task	Disable Claude Code's built-in worktree tools for spawned agents
+beans-26u4	completed		normal	task	Extract AgentActionsStore and move action buttons to toolbar
+beans-rvfe	completed		normal	task	Extract core GraphQL into pkg/beangraph
+beans-wh2z	completed		normal	task	Frontend: render actions from backend and use executeAgentAction
+beans-xcs6	completed		normal	task	Improve CLAUDE.md and rules files with comprehensive project documentation
+beans-ms7d	completed			task	Improve Integrate button prompt: safe merge without touching main
+beans-3tlw	completed			task	Improve worktree agent prompt to instruct bean upkeep
+beans-fsb0	completed		normal	task	Include workspace context in quick reply prompt
+beans-bz15	completed		normal	task	Migrate from creack/pty to aymanbagabas/go-pty for cross-platform PTY support
+beans-505l	completed		normal	task	Move diff view to full-height panel left of Changes pane
+beans-ocss	completed		normal	task	Persist workspace port assignments across restarts
+beans-a115	completed		normal	task	Reduce verbose agent logging
+beans-xijy	completed		normal	task	Refactor AgentChat into sub-components and extract shared RenderedMarkdown
+beans-sa92	completed		normal	task	Remove automatic reordering of workspaces in sidebar
+beans-bbg1	completed		normal	task	Remove pre-fetched context from ExecuteAgentAction, let agents gather their own context
+beans-1usq	completed		normal	task	Replace sidebar polling with workspaceStatuses subscription
+beans-l910	completed		normal	task	Replace textarea with tiptap in AgentComposer
+beans-pf8t	completed		normal	task	Show question text in AskUserQuestion tool line
+beans-yggw	completed		normal	task	Terminal pane hidden by default with lazy initialization
+beans-gjeo	completed			task	Terminal pane theme support with light/dark mode detection
+beans-u21t	completed		normal	task	Use DetectBeanIDs (git diff) as source of truth for worktree bean association in UI
+beans-4m42	completed		low	bug	Replace panic with graceful error in ID generation
+beans-eov1	completed		low	feature	Add frontend GraphQL code generation for type safety
+beans-959s	completed		low	task	Improve E2E test performance
+beans-bbjk	scrapped	zzk	normal	feature	Make agent chat action buttons configurable via config file
+beans-9rix	scrapped	zzs	normal	task	Add Content Security Policy headers
+beans-lw6p	scrapped	zzzs	normal	feature	Model chooser in web UI
+beans-5zpt	scrapped		normal	bug	Restore animate-pulse on subagent activity lines
+beans-nix5	scrapped		normal	task	Split into multiple CLI executables (beans, beans-serve, beans-tui)

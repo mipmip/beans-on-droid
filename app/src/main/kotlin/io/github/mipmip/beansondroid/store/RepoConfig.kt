@@ -1,5 +1,7 @@
 package io.github.mipmip.beansondroid.store
 
+import io.github.mipmip.beansondroid.index.BeanSort
+import io.github.mipmip.beansondroid.index.SortDirection
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -8,6 +10,8 @@ data class RepoConfig(
     val url: String,
     val label: String,
     val hasToken: Boolean = false,
+    val sort: BeanSort = BeanSort.Default,
+    val direction: SortDirection? = null,
 )
 
 @Serializable
@@ -21,7 +25,13 @@ data class RepoList(
         val existing = repos.firstOrNull { it.url == repo.url }
         if (existing != null) {
             return copy(
-                repos = repos.map { if (it.id == existing.id) it.copy(label = repo.label, hasToken = repo.hasToken) else it },
+                repos = repos.map {
+                    if (it.id == existing.id) {
+                        it.copy(label = repo.label, hasToken = repo.hasToken)
+                    } else {
+                        it
+                    }
+                },
                 activeId = activeId ?: existing.id,
             )
         }
@@ -42,6 +52,13 @@ data class RepoList(
 
     fun withToken(id: String, hasToken: Boolean): RepoList =
         copy(repos = repos.map { if (it.id == id) it.copy(hasToken = hasToken) else it })
+
+    fun withSort(id: String, sort: BeanSort, direction: SortDirection?): RepoList =
+        copy(
+            repos = repos.map {
+                if (it.id == id) it.copy(sort = sort, direction = direction) else it
+            },
+        )
 }
 
 fun repoIdFor(url: String): String =

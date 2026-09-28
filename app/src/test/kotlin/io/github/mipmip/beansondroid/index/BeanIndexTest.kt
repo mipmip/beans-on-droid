@@ -49,7 +49,7 @@ class BeanIndexTest {
     @Test
     fun emptyQueryReturnsEveryActiveBean() {
         val result = sample.query(BeanQuery())
-        assertEquals(listOf("b-1", "b-2", "b-3"), result.map { it.id })
+        assertEquals(listOf("b-2", "b-1", "b-3"), result.map { it.id })
     }
 
     @Test
@@ -61,7 +61,7 @@ class BeanIndexTest {
     @Test
     fun severalValuesWithinOneFacet() {
         val result = sample.query(BeanQuery(statuses = setOf("todo", "in-progress")))
-        assertEquals(listOf("b-1", "b-2", "b-3"), result.map { it.id })
+        assertEquals(listOf("b-2", "b-1", "b-3"), result.map { it.id })
     }
 
     @Test
@@ -113,7 +113,7 @@ class BeanIndexTest {
     @Test
     fun archivedIncludedOnRequest() {
         val result = sample.query(BeanQuery(includeArchived = true))
-        assertEquals(listOf("b-1", "b-2", "b-4", "b-3"), result.map { it.id })
+        assertEquals(listOf("b-2", "b-1", "b-3", "b-4"), result.map { it.id })
     }
 
     @Test

@@ -6,6 +6,8 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import io.github.mipmip.beansondroid.index.BeanSort
+import io.github.mipmip.beansondroid.index.SortDirection
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -27,6 +29,8 @@ interface RepoCatalog {
     suspend fun activate(id: String)
 
     suspend fun tokenFor(id: String): String?
+
+    suspend fun setSort(id: String, sort: BeanSort, direction: SortDirection?)
 }
 
 class RepoRegistry(
@@ -63,6 +67,9 @@ class RepoRegistry(
     override suspend fun activate(id: String) = update { it.activate(id) }
 
     override suspend fun tokenFor(id: String): String? = vault.get(id)
+
+    override suspend fun setSort(id: String, sort: BeanSort, direction: SortDirection?) =
+        update { it.withSort(id, sort, direction) }
 
     private suspend fun update(transform: (RepoList) -> RepoList) {
         dataStore.edit { prefs ->

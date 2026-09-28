@@ -171,6 +171,18 @@ class BeanParserTest {
     }
 
     @Test
+    fun aQuotedOrderKeepsItsValue() {
+        val bean = parsed(parser.parse("beans-q--x.md", "---\ntitle: T\norder: \"Y\"\n---\n"))
+        assertEquals("Y", bean.order)
+    }
+
+    @Test
+    fun anUnquotedOrderThatLooksBooleanIsStillText() {
+        val bean = parsed(parser.parse("beans-b--x.md", "---\ntitle: T\norder: Y\n---\n"))
+        assertEquals("Y", bean.order)
+    }
+
+    @Test
     fun unparseableTimestampLandsInExtras() {
         val content = """
             ---

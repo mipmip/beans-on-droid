@@ -51,6 +51,14 @@ class TestCatalog : RepoCatalog {
     }
 
     override suspend fun tokenFor(id: String): String? = vault.get(id)
+
+    override suspend fun setSort(
+        id: String,
+        sort: io.github.mipmip.beansondroid.index.BeanSort,
+        direction: io.github.mipmip.beansondroid.index.SortDirection?,
+    ) {
+        state.value = state.value.withSort(id, sort, direction)
+    }
 }
 
 object TestRepo {

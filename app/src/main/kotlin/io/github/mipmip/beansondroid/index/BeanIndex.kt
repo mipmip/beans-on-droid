@@ -1,6 +1,7 @@
 package io.github.mipmip.beansondroid.index
 
 import io.github.mipmip.beansondroid.bean.Bean
+import io.github.mipmip.beansondroid.bean.BeanVocabulary
 
 class BeanIndex(beans: List<Bean>) {
 
@@ -44,6 +45,14 @@ class BeanIndex(beans: List<Bean>) {
     fun byId(id: String): Bean? = byId[id]
 
     fun query(query: BeanQuery): List<Bean> {
+        val matched = matching(query)
+        return when {
+            query.isDefaultOrder -> matched
+            else -> matched.sortedWith(BeanSorting.comparator(query.sort, query.effectiveDirection))
+        }
+    }
+
+    private fun matching(query: BeanQuery): List<Bean> {
         val term = query.term.trim().lowercase()
         return all.filter { bean ->
             (query.includeArchived || !bean.archived) &&
@@ -53,6 +62,23 @@ class BeanIndex(beans: List<Bean>) {
                 (term.isEmpty() || matches(bean, term))
         }
     }
+
+    /** The rows to show: nested under the default order, flat otherwise. */
+    fun rows(query: BeanQuery): BeanTree = when {
+        query.showsTree -> tree(query)
+        else -> query(query).let { matched ->
+            BeanTree(rows = matched.map { BeanRow(it, depth = 0) }, matchCount = matched.size)
+        }
+    }
+
+    fun tree(query: BeanQuery): BeanTree = BeanTreeBuilder.build(
+        matched = query(query),
+        byId = ::byId,
+        ordering = when {
+            query.isDefaultOrder -> ORDERING
+            else -> BeanSorting.comparator(query.sort, query.effectiveDirection)
+        },
+    )
 
     fun relations(id: String): BeanRelations {
         val bean = byId[id] ?: return BeanRelations()
@@ -87,10 +113,13 @@ class BeanIndex(beans: List<Bean>) {
             bean.id.lowercase().contains(term)
 
     companion object {
-        private val ORDERING = compareBy<Bean>(
+        val ORDERING: Comparator<Bean> = compareBy<Bean>(
+            { BeanVocabulary.statusRank(it.status) },
             { it.order.isEmpty() },
             { it.order },
-            { it.title },
+            { BeanVocabulary.priorityRank(it.priority) },
+            { BeanVocabulary.typeRank(it.type) },
+            { it.title.lowercase() },
             { it.id },
         )
     }

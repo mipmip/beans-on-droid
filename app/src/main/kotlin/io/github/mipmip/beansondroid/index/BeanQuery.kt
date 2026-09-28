@@ -8,9 +8,21 @@ data class BeanQuery(
     val tags: Set<String> = emptySet(),
     val term: String = "",
     val includeArchived: Boolean = false,
+    val sort: BeanSort = BeanSort.Default,
+    val direction: SortDirection? = null,
 ) {
     val isEmpty: Boolean
         get() = statuses.isEmpty() && types.isEmpty() && tags.isEmpty() && term.isBlank()
+
+    val effectiveDirection: SortDirection
+        get() = direction ?: sort.defaultDirection
+
+    val isDefaultOrder: Boolean
+        get() = sort == BeanSort.Default && effectiveDirection == SortDirection.Ascending
+
+    /** A chosen order and a tree describe different arrangements of the same rows. */
+    val showsTree: Boolean
+        get() = isDefaultOrder && term.isBlank()
 }
 
 data class BeanRelations(

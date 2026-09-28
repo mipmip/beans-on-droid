@@ -1,5 +1,7 @@
 package io.github.mipmip.beansondroid.data
 
+import io.github.mipmip.beansondroid.index.BeanSort
+import io.github.mipmip.beansondroid.index.SortDirection
 import io.github.mipmip.beansondroid.repo.RepoError
 import io.github.mipmip.beansondroid.repo.RepoResult
 import io.github.mipmip.beansondroid.repo.RepoStore
@@ -55,6 +57,11 @@ class BeansRepository(
                 RepoResult.Success(config)
             }
         }
+    }
+
+    suspend fun setSort(sort: BeanSort, direction: SortDirection?) {
+        val active = catalog.current().activeId ?: return
+        catalog.setSort(active, sort, direction)
     }
 
     suspend fun activate(id: String) {

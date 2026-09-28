@@ -15,6 +15,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Sort
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Inventory2
@@ -22,6 +26,8 @@ import androidx.compose.material.icons.filled.Storage
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -45,12 +51,16 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import io.github.mipmip.beansondroid.bean.Bean
+import io.github.mipmip.beansondroid.bean.BeanVocabulary
 import io.github.mipmip.beansondroid.bean.ParseResult
 import io.github.mipmip.beansondroid.data.Activity
 import io.github.mipmip.beansondroid.data.IndexState
 import io.github.mipmip.beansondroid.index.BeanFacets
 import io.github.mipmip.beansondroid.index.BeanQuery
+import io.github.mipmip.beansondroid.index.BeanRow
+import io.github.mipmip.beansondroid.index.BeanSort
+import io.github.mipmip.beansondroid.index.BeanTree
+import io.github.mipmip.beansondroid.index.SortDirection
 import io.github.mipmip.beansondroid.ui.BeanVisuals
 import io.github.mipmip.beansondroid.ui.Message
 import io.github.mipmip.beansondroid.ui.Pill
@@ -81,6 +91,7 @@ fun BeanListScreen(
                     )
                 },
                 actions = {
+                    SortControl(query = query, viewModel = viewModel)
                     IconButton(
                         onClick = { filtersOpen = !filtersOpen },
                         modifier = Modifier.semantics { contentDescription = "Filters" },
@@ -120,7 +131,7 @@ fun BeanListScreen(
                 )
 
                 is IndexState.Ready -> Ready(
-                    beans = current.beans.index.query(query),
+                    tree = current.beans.index.rows(query),
                     total = current.beans.index.size,
                     skipped = current.beans.skipped,
                     staleReason = current.staleReason,
@@ -154,7 +165,7 @@ private fun Working(what: Activity) {
 
 @Composable
 private fun Ready(
-    beans: List<Bean>,
+    tree: BeanTree,
     total: Int,
     skipped: List<ParseResult.Skipped>,
     staleReason: String?,
@@ -203,7 +214,7 @@ private fun Ready(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = "${beans.size} of $total",
+                text = "${tree.matchCount} of $total",
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -229,7 +240,7 @@ private fun Ready(
                 onAction = onOpenRepos,
             )
 
-            beans.isEmpty() -> Message(
+            tree.matchCount == 0 -> Message(
                 title = "Nothing matches",
                 body = "No bean matches the search and filters you have set.",
                 actionLabel = "Clear filters",
@@ -237,8 +248,8 @@ private fun Ready(
             )
 
             else -> LazyColumn(modifier = Modifier.fillMaxSize().testTag(BEAN_LIST_TAG)) {
-                items(beans, key = { it.id }) { bean ->
-                    BeanRow(bean = bean, onClick = { onOpenBean(bean.id) })
+                items(tree.rows, key = { it.bean.id }) { row ->
+                    BeanRow(row = row, onClick = { onOpenBean(row.bean.id) })
                     HorizontalDivider()
                 }
             }
@@ -369,20 +380,41 @@ private fun FacetRow(
 }
 
 @Composable
-private fun BeanRow(bean: Bean, onClick: () -> Unit) {
+private fun BeanRow(row: BeanRow, onClick: () -> Unit) {
+    val bean = row.bean
+    val fade = if (row.isContext) 0.55f else 1f
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 10.dp),
+            .padding(
+                start = 16.dp + (row.depth * 20).dp,
+                end = 16.dp,
+                top = 10.dp,
+                bottom = 10.dp,
+            )
+            .semantics {
+                contentDescription = when {
+                    row.isContext -> "Context ${bean.id}"
+                    row.depth > 0 -> "Nested ${bean.id}"
+                    else -> bean.id
+                }
+            },
         verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
-        Text(
-            text = bean.title.ifEmpty { "(untitled)" },
-            style = MaterialTheme.typography.titleSmall,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
-        )
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            PriorityMark(bean.priority)
+            Text(
+                text = bean.title.ifEmpty { "(untitled)" },
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = fade),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
         Row(
             horizontalArrangement = Arrangement.spacedBy(6.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -404,6 +436,96 @@ private fun BeanRow(bean: Bean, onClick: () -> Unit) {
             if (bean.archived) {
                 Pill("archived", MaterialTheme.colorScheme.outline)
             }
+            if (row.isContext) {
+                Pill("parent", MaterialTheme.colorScheme.outline)
+            }
         }
     }
+}
+
+@Composable
+private fun PriorityMark(priority: String) {
+    when {
+        BeanVocabulary.isRaised(priority) -> Icon(
+            imageVector = Icons.Filled.KeyboardArrowUp,
+            contentDescription = "Raised priority, $priority",
+            tint = MaterialTheme.colorScheme.error,
+            modifier = Modifier.size(16.dp),
+        )
+
+        BeanVocabulary.isLowered(priority) -> Icon(
+            imageVector = Icons.Filled.KeyboardArrowDown,
+            contentDescription = "Lowered priority, $priority",
+            tint = MaterialTheme.colorScheme.outline,
+            modifier = Modifier.size(16.dp),
+        )
+    }
+}
+
+@Composable
+private fun SortControl(query: BeanQuery, viewModel: AppViewModel) {
+    var open by remember { mutableStateOf(false) }
+
+    IconButton(
+        onClick = { open = true },
+        modifier = Modifier.semantics {
+            contentDescription = "Sort, ${sortLabel(query.sort)}, ${directionLabel(query)}"
+        },
+    ) {
+        Icon(Icons.AutoMirrored.Filled.Sort, contentDescription = null)
+    }
+
+    DropdownMenu(expanded = open, onDismissRequest = { open = false }) {
+        BeanSort.entries.forEach { option ->
+            DropdownMenuItem(
+                text = { Text(sortLabel(option)) },
+                onClick = {
+                    viewModel.setSort(option)
+                    open = false
+                },
+                leadingIcon = {
+                    if (option == query.sort) {
+                        Icon(Icons.Filled.Check, contentDescription = null)
+                    }
+                },
+                modifier = Modifier.semantics {
+                    contentDescription = "Sort by ${sortLabel(option)}"
+                },
+            )
+        }
+        HorizontalDivider()
+        DropdownMenuItem(
+            text = { Text(directionLabel(query)) },
+            onClick = {
+                viewModel.toggleSortDirection()
+                open = false
+            },
+            leadingIcon = {
+                Icon(
+                    imageVector = when (query.effectiveDirection) {
+                        SortDirection.Ascending -> Icons.Filled.KeyboardArrowUp
+                        SortDirection.Descending -> Icons.Filled.KeyboardArrowDown
+                    },
+                    contentDescription = null,
+                )
+            },
+            modifier = Modifier.semantics { contentDescription = "Reverse order" },
+        )
+    }
+}
+
+private fun sortLabel(sort: BeanSort): String = when (sort) {
+    BeanSort.Default -> "Default order"
+    BeanSort.Created -> "Created"
+    BeanSort.Updated -> "Updated"
+    BeanSort.Status -> "Status"
+    BeanSort.Priority -> "Priority"
+    BeanSort.Type -> "Type"
+    BeanSort.Title -> "Title"
+    BeanSort.Id -> "Id"
+}
+
+private fun directionLabel(query: BeanQuery): String = when (query.effectiveDirection) {
+    SortDirection.Ascending -> "Ascending"
+    SortDirection.Descending -> "Descending"
 }
