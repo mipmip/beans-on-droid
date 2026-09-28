@@ -16,7 +16,9 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.ContentPaste
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material.icons.outlined.Circle
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
@@ -31,13 +33,18 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.pm.PackageManager
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -51,8 +58,24 @@ import io.github.mipmip.beansondroid.viewmodel.AppViewModel
 fun RepoScreen(viewModel: AppViewModel, onBack: () -> Unit) {
     val repos by viewModel.repos.collectAsStateWithLifecycle()
     val form by viewModel.addRepo.collectAsStateWithLifecycle()
+    val pendingCapture by viewModel.pendingCapture.collectAsStateWithLifecycle()
     var adding by remember { mutableStateOf(false) }
+    var scanning by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val hasCamera = remember {
+        context.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)
+    }
+
+    LaunchedEffect(pendingCapture) {
+        if (pendingCapture) {
+            adding = true
+            viewModel.consumePendingCapture()
+        }
+    }
     var pendingRemoval by remember { mutableStateOf<RepoConfig?>(null) }
+    val clipboard = remember(context) {
+        context.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
+    }
 
     Scaffold(
         topBar = {
@@ -94,6 +117,17 @@ fun RepoScreen(viewModel: AppViewModel, onBack: () -> Unit) {
         }
     }
 
+    if (scanning) {
+        ScannerScreen(
+            onResult = { url ->
+                viewModel.captureUrl(url)
+                scanning = false
+            },
+            onDismiss = { scanning = false },
+        )
+        return
+    }
+
     if (adding) {
         AddRepoDialog(
             url = form.url,
@@ -104,6 +138,20 @@ fun RepoScreen(viewModel: AppViewModel, onBack: () -> Unit) {
             onUrl = viewModel::onAddRepoUrlChanged,
             onLabel = viewModel::onAddRepoLabelChanged,
             onToken = viewModel::onAddRepoTokenChanged,
+            onScan = if (hasCamera) {
+                { scanning = true }
+            } else {
+                null
+            },
+            onPaste = {
+                val text = clipboard?.primaryClip
+                    ?.takeIf { it.itemCount > 0 }
+                    ?.getItemAt(0)
+                    ?.coerceToText(context)
+                    ?.toString()
+                    .orEmpty()
+                viewModel.captureUrl(text)
+            },
             onDismiss = {
                 if (!form.busy) {
                     viewModel.resetAddRepo()
@@ -213,6 +261,8 @@ private fun AddRepoDialog(
     onUrl: (String) -> Unit,
     onLabel: (String) -> Unit,
     onToken: (String) -> Unit,
+    onScan: (() -> Unit)?,
+    onPaste: () -> Unit,
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
 ) {
@@ -230,6 +280,36 @@ private fun AddRepoDialog(
                     placeholder = { Text("https://github.com/hmans/beans.git") },
                     modifier = Modifier.fillMaxWidth().semantics { contentDescription = "Clone URL" },
                 )
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    if (onScan != null) {
+                        TextButton(
+                            onClick = onScan,
+                            enabled = !busy,
+                            modifier = Modifier.semantics {
+                                contentDescription = "Scan a QR code"
+                            },
+                        ) {
+                            Icon(
+                                Icons.Filled.QrCodeScanner,
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp),
+                            )
+                            Text(" Scan")
+                        }
+                    }
+                    TextButton(
+                        onClick = onPaste,
+                        enabled = !busy,
+                        modifier = Modifier.semantics { contentDescription = "Paste a URL" },
+                    ) {
+                        Icon(
+                            Icons.Filled.ContentPaste,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp),
+                        )
+                        Text(" Paste")
+                    }
+                }
                 OutlinedTextField(
                     value = label,
                     onValueChange = onLabel,

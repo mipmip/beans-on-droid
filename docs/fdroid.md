@@ -20,6 +20,8 @@ Every artifact on the release runtime classpath, by group:
 | `com.squareup.okio`      | Apache-2.0          |
 | `org.jspecify`           | Apache-2.0          |
 | `com.google.guava:listenablefuture` | Apache-2.0 |
+| `androidx.camera.*` (CameraX) | Apache-2.0 |
+| `com.google.zxing:core` | Apache-2.0 |
 
 All OSI-approved and all compatible with distributing an Apache-2.0 app.
 
@@ -37,8 +39,28 @@ Crashlytics, any analytics SDK, and any ad SDK.
 
 ## Permissions
 
-One: `android.permission.INTERNET`. Nothing else is declared. The app reads
-repositories over HTTP and writes only to its own private storage.
+Two.
+
+| Permission | Why |
+|---|---|
+| `INTERNET` | Cloning and fetching repositories over HTTP |
+| `CAMERA` | Scanning a QR code to fill in a repository URL |
+
+The camera is requested the first time scanning is chosen, never at launch, and
+the camera runs only while the scanner is on screen. Refusing it leaves the rest
+of the app working: the URL can be typed, pasted, or shared in from another
+application.
+
+`android.hardware.camera` is declared with `required="false"`, so the app still
+installs on a device without one, where the scan action is not offered.
+
+This is a change from the app's first release, which declared `INTERNET` alone.
+That was worth saying out loud rather than quietly dropping the claim.
+
+The app writes only to its own private storage, and declares one intent filter
+beyond the launcher: `ACTION_SEND` for `text/plain`, so a URL can be shared into
+it. It does not claim `ACTION_VIEW` for `https`, which would put it in the
+chooser for every link tapped on the phone.
 
 ## No network callbacks the user did not ask for
 

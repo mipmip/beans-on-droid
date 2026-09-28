@@ -34,8 +34,24 @@ same way.
 
 1. Open the repository screen from the icon in the top bar.
 2. Tap the add button.
-3. Paste the **HTTPS clone URL**, for example
+3. Fill in the **HTTPS clone URL**, for example
    `https://github.com/hmans/beans.git`. SSH URLs are not supported in Phase 1.
+
+   Three ways to avoid typing it:
+
+   - **Scan** a QR code containing the URL. The camera is requested the first
+     time you use this and runs only while the scanner is open.
+   - **Paste** from the clipboard.
+   - **Share** a repository page into Beans on Droid from a browser or a git
+     client. It appears in the share sheet.
+
+   All three accept a repository's **page** URL, not only its clone URL. A
+   browser's "QR code for this page" on
+   `https://github.com/hmans/beans/tree/main?tab=readme-ov-file` gives you a URL
+   that does not clone, so the app trims the query string and the view path back
+   to `https://github.com/hmans/beans` and shows you the result before anything
+   is fetched. Nothing is cloned until you press Add, and you can correct the
+   field first.
 4. For a private repository, paste a **personal access token** with read access
    to the repository. The token is sent as the HTTP basic username, which is what
    GitHub, GitLab and Gitea all accept.

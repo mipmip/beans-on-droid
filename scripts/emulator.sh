@@ -15,6 +15,13 @@ TAG="default"
 ROOT="$(git rev-parse --show-toplevel)"
 cd "$ROOT"
 
+# CAMERA_IMAGE points the emulated back camera at a still image, which is how
+# the QR scanner is tested without a physical device.
+CAMERA_ARGS=()
+if [[ -n "${CAMERA_IMAGE:-}" ]]; then
+  CAMERA_ARGS=(-camera-back "imagefile:${CAMERA_IMAGE}")
+fi
+
 export ANDROID_AVD_HOME="$ROOT/.avd"
 mkdir -p "$ANDROID_AVD_HOME"
 
@@ -34,7 +41,7 @@ case "$ACTION" in
     fi
     echo "==> booting $AVD headless"
     emulator -avd "$AVD" -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect \
-      -no-snapshot -wipe-data >"$ROOT/.avd/emulator.log" 2>&1 &
+      -no-snapshot -wipe-data "${CAMERA_ARGS[@]}" >"$ROOT/.avd/emulator.log" 2>&1 &
     echo "==> waiting for boot"
     adb wait-for-device
     until [[ "$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" == "1" ]]; do

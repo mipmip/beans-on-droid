@@ -26,6 +26,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- A repository URL can be filled in by scanning a QR code, pasting from the
+  clipboard, or sharing a page into the app from a browser or git client.
+  A forge page URL is trimmed back to the clone URL, shown for you to check,
+  and nothing is fetched until you confirm.
 - The bean list can be sorted by created, updated, status, priority, type,
   title or id, in either direction, and remembers the choice per repository.
 - The bean list nests children under their parents. Choosing a sort or typing a

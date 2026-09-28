@@ -92,7 +92,7 @@ class StatesTest {
     @Test
     fun anUnreachableRepositoryReportsANetworkFailureWithRetry() {
         runBlocking {
-            val config = catalog.add("https://beans.invalid/x.git", "Broken", null)
+            val config = catalog.add("http://127.0.0.1:1/x.git", "Broken", null)
             catalog.activate(config.id)
             beans.loadActive()
         }

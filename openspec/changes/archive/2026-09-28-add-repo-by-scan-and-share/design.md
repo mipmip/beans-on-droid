@@ -140,12 +140,37 @@ to someone's source.
   could introduce a path shape the rules mangle. The editable field is the
   backstop, and the rules are covered by table-driven tests that are cheap to
   extend when a real URL defeats them.
-- **Scanner tests need a camera.** The decoder and both pure functions are unit
-  testable, and the permission and form behaviour are testable on an emulator,
-  but pointing a virtual camera at a generated QR code is awkward. The emulator
-  supports a virtual scene; if that proves unreliable, the honest split is to
-  test the decode path against generated bitmaps and the scanner screen's states
-  without a live camera, and say so rather than claiming coverage that is not
-  there.
+- **A decode from a live camera is not proven, and could not be.** This was
+  attempted properly rather than waved away, and the result is worth recording.
+
+  The emulator can render a still image as the camera feed
+  (`-camera-back imagefile:<png>`), and `scripts/emulator.sh` takes a
+  `CAMERA_IMAGE` variable for exactly that. On API 26 the scene renderer
+  refuses the format the camera framework asks for:
+
+  ```
+  ERROR | Unsupported camera format for virtual scene views 825382478
+  ```
+
+  825382478 is the NV21 fourcc. On an API 36 image the error is gone and frames
+  do flow, and dumping one as ASCII shows the QR code really is in the frame,
+  finder patterns and all. It still does not decode, because the emulator maps
+  the injected image into a fixed sub-region and stretches it to roughly 1.6:1.
+  Pre-distorting the source to compensate made it worse, because the transform
+  is not a simple scale. A QR code does not survive that, and nothing inside the
+  app can undo it.
+
+  So the coverage is split honestly:
+
+  | Claim | How it is proven |
+  |---|---|
+  | The decoder reads real QR codes | `QrDecoderTest`, generated codes, off device |
+  | Frames with row padding still decode | `FrameConverterTest`, padded real QR frames |
+  | CameraX binds and frames reach the analyzer in the expected format and geometry | `ScannerCameraTest`, on a device |
+  | A captured URL fills the form and clones nothing | `CaptureTest`, on a device |
+  | **A decode from a live camera** | **not proven; a manual check on a phone** |
+
+  Every link in the chain is tested except the join between a real lens and the
+  decoder, and that join is the one an emulator cannot represent.
 - **APK size grows** by roughly two megabytes for CameraX and the decoder, on an
   app whose value is reading text files.

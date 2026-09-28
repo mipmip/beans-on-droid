@@ -3,6 +3,8 @@ package io.github.mipmip.beansondroid.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import io.github.mipmip.beansondroid.capture.CaptureResult
+import io.github.mipmip.beansondroid.capture.UrlCapture
 import io.github.mipmip.beansondroid.data.BeansRepository
 import io.github.mipmip.beansondroid.data.IndexState
 import io.github.mipmip.beansondroid.index.BeanQuery
@@ -46,6 +48,9 @@ class AppViewModel(
 
     private val _addRepo = MutableStateFlow(AddRepoState())
     val addRepo: StateFlow<AddRepoState> = _addRepo.asStateFlow()
+
+    private val _pendingCapture = MutableStateFlow(false)
+    val pendingCapture: StateFlow<Boolean> = _pendingCapture.asStateFlow()
 
     private val _refreshing = MutableStateFlow(false)
     val refreshing: StateFlow<Boolean> = _refreshing.asStateFlow()
@@ -95,6 +100,25 @@ class AppViewModel(
     }
 
     fun onAddRepoUrlChanged(url: String) = _addRepo.update { it.copy(url = url, error = null) }
+
+    /** A URL captured from a scan, a share or the clipboard. Fills the form only. */
+    fun captureUrl(text: String): Boolean = when (val result = UrlCapture.capture(text)) {
+        is CaptureResult.Found -> {
+            _addRepo.update { it.copy(url = result.url, error = null) }
+            _pendingCapture.value = true
+            true
+        }
+
+        CaptureResult.NoUrl -> {
+            _addRepo.update { it.copy(error = "No repository URL in that.") }
+            _pendingCapture.value = true
+            false
+        }
+    }
+
+    fun consumePendingCapture() {
+        _pendingCapture.value = false
+    }
 
     fun onAddRepoLabelChanged(label: String) = _addRepo.update { it.copy(label = label) }
 
