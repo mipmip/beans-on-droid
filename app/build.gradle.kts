@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
@@ -26,6 +28,96 @@ private val coverageExclusions = listOf(
     "io/github/mipmip/beansondroid/store/KeystoreTokenVault*",
 )
 
+/**
+ * The single source of truth for the app's version. Shell reads it with `cat`,
+ * Gradle reads it here, and `scripts/release.sh` rewrites it.
+ */
+private fun readVersionName(): String {
+    val file = rootProject.file("VERSION")
+    if (!file.isFile) {
+        throw GradleException("VERSION is missing at ${file.path}. It must hold major.minor.patch.")
+    }
+    val text = file.readText().trim()
+    if (!Regex("""^\d+\.\d+\.\d+$""").matches(text)) {
+        throw GradleException("VERSION must be major.minor.patch, found \"$text\" in ${file.path}.")
+    }
+    return text
+}
+
+/**
+ * F-Droid orders releases by versionCode and it can never decrease. The
+ * rebuild slot exists for republishing the same version after a bad artefact,
+ * which a purely derived code could not otherwise survive.
+ */
+private fun versionCodeFor(name: String): Int {
+    val (major, minor, patch) = name.split('.').map(String::toInt)
+    val rebuild = (System.getenv("BEANS_VERSION_REBUILD") ?: "0").toIntOrNull()
+        ?: throw GradleException("BEANS_VERSION_REBUILD must be a whole number.")
+    if (rebuild !in 0..99) {
+        throw GradleException("BEANS_VERSION_REBUILD must be between 0 and 99, found $rebuild.")
+    }
+    return major * 1_000_000 + minor * 10_000 + patch * 100 + rebuild
+}
+
+private class ReleaseSigning(
+    val store: File,
+    val storePassword: String,
+    val alias: String,
+    val keyPassword: String,
+)
+
+/**
+ * A local `keystore.properties` first, then the environment.
+ *
+ * The file comes first deliberately. The Gradle daemon caches the environment
+ * it started with, so a long-running daemon cannot see variables exported for
+ * a later invocation, and the build would quietly produce an unsigned APK.
+ * A file is read every time. CI always has a fresh daemon, so the environment
+ * path is the one it uses.
+ */
+private fun releaseSigning(propertiesFile: File): ReleaseSigning? {
+    val fromFile: Properties? = propertiesFile.takeIf { it.isFile }?.let { file ->
+        val loaded = Properties()
+        file.inputStream().use { loaded.load(it) }
+        loaded
+    }
+
+    fun value(fileKey: String, env: String): String? =
+        fromFile?.getProperty(fileKey)?.takeIf { it.isNotBlank() }
+            ?: System.getenv(env)?.takeIf { it.isNotBlank() }
+
+    val storePath = value("storeFile", "BEANS_KEYSTORE") ?: return null
+    val store = File(storePath).let { if (it.isAbsolute) it else File(propertiesFile.parentFile, storePath) }
+
+    if (!store.isFile) {
+        throw GradleException(
+            "Release signing was configured but the keystore is not at ${store.path}. " +
+                "Fix the path or remove the setting; a half-configured key must not " +
+                "silently produce an unsigned APK.",
+        )
+    }
+
+    val storePassword = value("storePassword", "BEANS_KEYSTORE_PASSWORD")
+    val alias = value("keyAlias", "BEANS_KEY_ALIAS")
+    val keyPassword = value("keyPassword", "BEANS_KEY_PASSWORD") ?: storePassword
+
+    val missing = buildList {
+        if (storePassword.isNullOrBlank()) add("storePassword / BEANS_KEYSTORE_PASSWORD")
+        if (alias.isNullOrBlank()) add("keyAlias / BEANS_KEY_ALIAS")
+    }
+    if (missing.isNotEmpty()) {
+        throw GradleException(
+            "Release signing is half configured. The keystore at ${store.path} was found " +
+                "but these are missing: ${missing.joinToString(", ")}.",
+        )
+    }
+
+    return ReleaseSigning(store, storePassword!!, alias!!, keyPassword!!)
+}
+
+private val appVersionName = readVersionName()
+private val appVersionCode = versionCodeFor(appVersionName)
+
 private val corePackages = listOf(
     "io.github.mipmip.beansondroid.bean",
     "io.github.mipmip.beansondroid.index",
@@ -40,15 +132,31 @@ android {
         applicationId = "io.github.mipmip.beansondroid"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.compileSdk.get().toInt()
-        versionCode = 1
-        versionName = "0.1.0"
+        versionCode = appVersionCode
+        versionName = appVersionName
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    val release = releaseSigning(rootProject.file("keystore.properties"))
+
+    signingConfigs {
+        if (release != null) {
+            create("release") {
+                storeFile = release.store
+                storePassword = release.storePassword
+                keyAlias = release.alias
+                keyPassword = release.keyPassword
+            }
+        }
     }
 
     buildTypes {
         release {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            // Absent key means an unsigned build, so a contributor without the
+            // key can still build the release variant.
+            signingConfig = release?.let { signingConfigs.getByName("release") }
         }
     }
 

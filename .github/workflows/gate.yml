@@ -1,0 +1,41 @@
+name: gate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: gate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      # CI runs the same entry point as a developer does, through the same
+      # flake, so it cannot pass against a toolchain nobody builds with.
+      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+
+      - name: Gate
+        run: ./scripts/gate.sh
+
+      - name: Coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: app/build/reports/jacoco/jacocoTestReport/
+          if-no-files-found: warn
+
+      - name: Unit test report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-tests
+          path: app/build/reports/tests/
+          if-no-files-found: warn

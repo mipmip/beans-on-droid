@@ -26,6 +26,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- A release process: the version lives in one `VERSION` file that Gradle reads
+  and `scripts/release.sh` bumps, with `versionCode` derived from it. Releases
+  are built and published by GitHub Actions from a signed tag, and the gate
+  runs on every push.
 - A repository URL can be filled in by scanning a QR code, pasting from the
   clipboard, or sharing a page into the app from a browser or git client.
   A forge page URL is trimmed back to the clone URL, shown for you to check,

@@ -58,9 +58,34 @@ that can never be updated again. `docs/RELEASING.md` states the backup
 obligation as part of the release procedure rather than as advice, because the
 failure is silent until the day it matters.
 
-The key never enters the repository. The signing configuration reads it from
-the environment and, when it is absent, produces an unsigned build rather than
-failing, so a contributor can still build the release variant.
+The key never enters the repository. The signing configuration reads a local
+`keystore.properties` first and the environment second, and when neither is
+present it produces an unsigned build rather than failing, so a contributor can
+still build the release variant.
+
+### The file comes first because the daemon caches the environment
+
+The first version read only environment variables. It looked right and it was
+wrong: the Gradle daemon keeps the environment it started with, so variables
+exported for a later invocation are invisible to it. The build then succeeded
+and produced `app-release-unsigned.apk` without a word.
+
+That is the worst possible failure for this feature. A release script that
+quietly ships an unsigned artefact is worse than one that crashes.
+
+Two changes came out of it:
+
+- **A file is read on every build**, so it cannot go stale. `keystore.properties`
+  at the root, mode 600, gitignored, is the conventional Android answer and it
+  keeps the password off the command line where `ps` could see it.
+- **Half a configuration is an error.** If a keystore path is given but the file
+  is missing, or a keystore is found but the password or alias is not, the build
+  fails and says which piece is absent. Only a complete absence of signing
+  configuration is allowed to fall through to an unsigned build.
+
+Verified in all three states: nothing configured builds unsigned and succeeds,
+a bad path fails naming the path, a keystore without a password fails naming
+the missing fields.
 
 ## Version
 
@@ -153,6 +178,23 @@ outside `gate.sh`: an emulator boot is minutes and a failure there is more often
 the emulator than the app. GitHub's Linux runners do expose KVM and the AVD is
 already an API 26 AOSP x86_64 image, so the action works; it is the latency that
 keeps it on request.
+
+## What the signer change means, demonstrated
+
+On an emulator, with the release key in place:
+
+```
+adb install app-release.apk          Success   (versionCode 20000, 0.2.0)
+adb install -r app-debug.apk         Failure [INSTALL_FAILED_UPDATE_INCOMPATIBLE:
+                                     signatures do not match the previously
+                                     installed version]
+```
+
+That is the same refusal a user will meet moving between an interim build and
+an F-Droid one, reproduced deliberately rather than described.
+
+Release signer: `CN=Beans on Droid, O=mipmip, C=NL`.
+Debug signer: `C=US, O=Android, CN=Android Debug`.
 
 ## Risks
 

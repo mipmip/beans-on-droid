@@ -81,10 +81,25 @@ Without nix you need JDK 17, the Android SDK with platform 37 and build-tools
 The debug APK lands in `app/build/outputs/apk/debug/app-debug.apk` and can be
 installed with `adb install -r app/build/outputs/apk/debug/app-debug.apk`.
 
+## Installing a release
+
+Released APKs are attached to the
+[GitHub releases](https://github.com/mipmip/beans-on-droid/releases), with a
+SHA-256 file beside each one. Download the APK, check the checksum, and open it
+on the phone.
+
+**Read this before you install one.** These builds are signed with the
+project's own key. The plan is F-Droid, and F-Droid signs with its own key
+instead. Android will not upgrade an app across a change of signer, so unless
+the reproducible build path lands first, moving to the F-Droid version will
+mean uninstalling this one and losing your configured repositories and tokens.
+[docs/RELEASING.md](docs/RELEASING.md) explains what would avoid that.
+
 ### Checks
 
 ```bash
 ./scripts/gate.sh          # nix flake check, then build, unit tests, lint, coverage
+./scripts/release.sh minor --dry-run   # rehearse a release
 ./scripts/e2e.sh           # boots a headless API 26 emulator and runs the instrumented tests
 ./scripts/screenshots.sh   # regenerates the F-Droid screenshots from a real run
 ```

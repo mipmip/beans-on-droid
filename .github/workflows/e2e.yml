@@ -1,0 +1,41 @@
+name: e2e
+
+on:
+  workflow_dispatch:
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+
+      # The instrumented suite is off the per-push path deliberately: an
+      # emulator boot costs minutes and a failure there is more often the
+      # emulator than the app.
+      - name: Allow KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
+            | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Instrumented tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 26
+          target: default
+          arch: x86_64
+          profile: pixel_2
+          script: nix develop --command ./gradlew connectedDebugAndroidTest
+
+      - name: Test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: instrumented-tests
+          path: app/build/reports/androidTests/
+          if-no-files-found: warn

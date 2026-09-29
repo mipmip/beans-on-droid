@@ -103,9 +103,27 @@ else is resolved from Maven Central and Google's Maven repository at build time.
 - `images/phoneScreenshots/`, four screenshots captured from a real run on an
   API 26 emulator by `scripts/screenshots.sh`
 
+## Interim distribution, and what it costs
+
+F-Droid inclusion takes time, and the app is being given to people before then.
+Those interim APKs are published as GitHub releases, signed with the project's
+own key, and that creates a fork in the install base: F-Droid signs with its
+key, and Android refuses an upgrade across a change of signer.
+
+The position, stated rather than discovered later:
+
+- The key is treated as permanent from the first release.
+- The reproducible build path is the goal, so F-Droid can verify our APK and
+  distribute our signature, which keeps early installers upgradeable.
+- Until that lands, the README and the release notes say plainly that moving to
+  the F-Droid build may need one uninstall.
+
+[docs/RELEASING.md](RELEASING.md) holds the procedure and the key handling.
+
 ## Versioning and licence
 
-- `versionCode = 1`, `versionName = "0.1.0"`
+- `versionName` comes from the top-level `VERSION` file, and `versionCode` is
+  derived from it, so the two cannot drift
 - `LICENSE` is Apache-2.0
 - The README states that the app is unofficial and not affiliated with
   `hmans/beans`

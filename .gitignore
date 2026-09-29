@@ -16,3 +16,8 @@ result
 result-*
 
 .avd/
+
+# Release signing material never belongs in the repository.
+*.jks
+*.keystore
+keystore.properties
