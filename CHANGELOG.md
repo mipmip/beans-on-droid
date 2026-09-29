@@ -26,6 +26,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- The repository screen shows which build you are running, name and version
+  code, whether or not a repository is configured.
 - A release process: the version lives in one `VERSION` file that Gradle reads
   and `scripts/release.sh` bumps, with `versionCode` derived from it. Releases
   are built and published by GitHub Actions from a signed tag, and the gate

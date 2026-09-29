@@ -100,6 +100,33 @@ class CaptureTest {
     }
 
     @Test
+    fun theVersionIsShownWhenTheListIsEmpty() {
+        show()
+        compose.onNodeWithContentDescription(expectedVersionDescription()).assertIsDisplayed()
+    }
+
+    @Test
+    fun theVersionIsShownWithRepositoriesConfigured() {
+        runBlocking { catalog.add("https://example.test/a.git", "A", null) }
+        show()
+        compose.onNodeWithText("A").assertIsDisplayed()
+        compose.onNodeWithContentDescription(expectedVersionDescription()).assertIsDisplayed()
+    }
+
+    @Test
+    fun theShownVersionIsTheRunningBuild() {
+        show()
+        val expected = "Beans on Droid " +
+            "${io.github.mipmip.beansondroid.BuildConfig.VERSION_NAME} " +
+            "(${io.github.mipmip.beansondroid.BuildConfig.VERSION_CODE})"
+        compose.onNodeWithText(expected).assertIsDisplayed()
+    }
+
+    private fun expectedVersionDescription(): String =
+        "Version ${io.github.mipmip.beansondroid.BuildConfig.VERSION_NAME} " +
+            "(${io.github.mipmip.beansondroid.BuildConfig.VERSION_CODE})"
+
+    @Test
     fun theFormOffersScanAndPaste() {
         show()
         compose.onNodeWithContentDescription("Add repository").performClick()

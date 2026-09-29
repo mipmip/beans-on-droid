@@ -1,13 +1,14 @@
 ---
 # beans-on-droid-s7qe
 title: release management
-status: in-progress
+status: completed
 type: task
 priority: normal
 created_at: 2026-09-28T15:00:11Z
-updated_at: 2026-09-28T15:10:54Z
+updated_at: 2026-09-29T12:02:53Z
 blocking:
     - beans-on-droid-4vhg
+openspec-link: openspec/changes/archive/2026-09-29-release-management
 ---
 
 - changelog management

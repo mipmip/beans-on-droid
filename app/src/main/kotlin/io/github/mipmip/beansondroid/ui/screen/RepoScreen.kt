@@ -50,6 +50,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.github.mipmip.beansondroid.BuildConfig
 import io.github.mipmip.beansondroid.store.RepoConfig
 import io.github.mipmip.beansondroid.viewmodel.AppViewModel
 
@@ -100,20 +101,23 @@ fun RepoScreen(viewModel: AppViewModel, onBack: () -> Unit) {
             }
         },
     ) { padding ->
-        if (repos.repos.isEmpty()) {
-            EmptyRepos(Modifier.fillMaxSize().padding(padding))
-        } else {
-            LazyColumn(modifier = Modifier.fillMaxSize().padding(padding)) {
-                items(repos.repos, key = { it.id }) { repo ->
-                    RepoRow(
-                        repo = repo,
-                        active = repo.id == repos.activeId,
-                        onActivate = { viewModel.activate(repo.id) },
-                        onRemove = { pendingRemoval = repo },
-                    )
-                    HorizontalDivider()
+        Column(modifier = Modifier.fillMaxSize().padding(padding)) {
+            if (repos.repos.isEmpty()) {
+                EmptyRepos(Modifier.weight(1f))
+            } else {
+                LazyColumn(modifier = Modifier.weight(1f)) {
+                    items(repos.repos, key = { it.id }) { repo ->
+                        RepoRow(
+                            repo = repo,
+                            active = repo.id == repos.activeId,
+                            onActivate = { viewModel.activate(repo.id) },
+                            onRemove = { pendingRemoval = repo },
+                        )
+                        HorizontalDivider()
+                    }
                 }
             }
+            VersionFooter()
         }
     }
 
@@ -234,6 +238,20 @@ private fun RepoRow(
             Icon(Icons.Filled.Delete, contentDescription = "Remove ${repo.label}")
         }
     }
+}
+
+@Composable
+private fun VersionFooter() {
+    val version = "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})"
+    Text(
+        text = "Beans on Droid $version",
+        style = MaterialTheme.typography.labelSmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 12.dp)
+            .semantics { contentDescription = "Version $version" },
+    )
 }
 
 @Composable

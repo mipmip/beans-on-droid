@@ -172,5 +172,10 @@ to someone's source.
 
   Every link in the chain is tested except the join between a real lens and the
   decoder, and that join is the one an emulator cannot represent.
+
+  **Confirmed on 2026-09-29**, after this change was archived: scanning was
+  exercised on a Fairphone 6 running LineageOS, Android 16, and it works. The
+  last row of the table above is now closed by a manual check rather than by an
+  automated one, which is the most that was ever available for it.
 - **APK size grows** by roughly two megabytes for CameraX and the decoder, on an
   app whose value is reading text files.
