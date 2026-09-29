@@ -1,11 +1,12 @@
 ---
 # beans-on-droid-hkb4
 title: show the app version in the app
-status: in-progress
+status: completed
 type: feature
 priority: normal
 created_at: 2026-09-29T12:11:20Z
-updated_at: 2026-09-29T12:12:14Z
+updated_at: 2026-09-29T13:01:14Z
+openspec-link: openspec/changes/archive/2026-09-29-show-app-version
 ---
 
 The app displays its version nowhere. Someone with a sideloaded build
