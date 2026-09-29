@@ -1,11 +1,11 @@
 ---
 # beans-on-droid-5kt0
 title: cut the 0.2.0 release
-status: todo
+status: in-progress
 type: task
 priority: normal
 created_at: 2026-09-29T12:01:28Z
-updated_at: 2026-09-29T12:01:28Z
+updated_at: 2026-09-29T13:08:46Z
 blocked_by:
     - beans-on-droid-s7qe
 ---

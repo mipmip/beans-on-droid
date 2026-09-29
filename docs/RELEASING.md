@@ -6,7 +6,9 @@ implies the other.
 
 ## The version
 
-`VERSION` at the repository root holds the semantic version and nothing else.
+`VERSION` at the repository root holds the **last released** version and
+nothing else. `release.sh` bumps from it, so it trails the tags by one release
+rather than naming the version being worked towards.
 Gradle reads it for `versionName` and derives `versionCode` from it:
 
 ```
