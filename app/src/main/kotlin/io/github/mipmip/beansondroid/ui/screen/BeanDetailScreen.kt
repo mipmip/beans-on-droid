@@ -1,5 +1,8 @@
 package io.github.mipmip.beansondroid.ui.screen
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,21 +12,31 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ContentCopy
+import androidx.compose.material3.AssistChip
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextDecoration
@@ -38,6 +51,7 @@ import io.github.mipmip.beansondroid.ui.MarkdownText
 import io.github.mipmip.beansondroid.ui.Message
 import io.github.mipmip.beansondroid.ui.Pill
 import io.github.mipmip.beansondroid.viewmodel.AppViewModel
+import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -56,8 +70,21 @@ fun BeanDetailScreen(
     val state by viewModel.indexState.collectAsStateWithLifecycle()
     val ready = state as? IndexState.Ready
     val bean = ready?.beans?.index?.byId(beanId)
+    val context = LocalContext.current
+    val clipboard = remember(context) {
+        context.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
+    }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+    val copyId: (String) -> Unit = { id ->
+        clipboard?.setPrimaryClip(ClipData.newPlainText("bean id", id))
+        scope.launch {
+            snackbarHostState.showSnackbar("Copied $id", duration = SnackbarDuration.Short)
+        }
+    }
 
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
                 title = {
@@ -112,7 +139,7 @@ fun BeanDetailScreen(
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Header(bean)
+            Header(bean, copyId)
             HorizontalDivider()
             Frontmatter(bean)
             if (bean.extras.isNotEmpty()) {
@@ -131,18 +158,17 @@ fun BeanDetailScreen(
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun Header(bean: Bean) {
+private fun Header(bean: Bean, onCopyId: (String) -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
         Text(
             text = bean.title.ifEmpty { "(untitled)" },
             style = MaterialTheme.typography.headlineSmall,
         )
-        FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            Text(
-                text = bean.id,
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            itemVerticalAlignment = Alignment.CenterVertically,
+        ) {
+            CopyIdChip(bean.id, onCopyId)
             if (bean.status.isNotEmpty()) {
                 Pill(bean.status, BeanVisuals.statusColor(bean.status, MaterialTheme.colorScheme))
             }
@@ -154,6 +180,22 @@ private fun Header(bean: Bean) {
             }
         }
     }
+}
+
+@Composable
+private fun CopyIdChip(id: String, onCopyId: (String) -> Unit) {
+    AssistChip(
+        onClick = { onCopyId(id) },
+        label = { Text(id) },
+        leadingIcon = {
+            Icon(
+                Icons.Filled.ContentCopy,
+                contentDescription = null,
+                modifier = Modifier.size(16.dp),
+            )
+        },
+        modifier = Modifier.semantics { contentDescription = "Copy id $id" },
+    )
 }
 
 @Composable

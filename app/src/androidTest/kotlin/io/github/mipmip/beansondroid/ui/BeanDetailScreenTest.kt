@@ -1,8 +1,12 @@
 package io.github.mipmip.beansondroid.ui
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -96,6 +100,46 @@ class BeanDetailScreenTest {
                 )
             }
         }
+    }
+
+    private fun clipboard(): ClipboardManager {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        return context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    }
+
+    private fun clipboardText(): String =
+        clipboard().primaryClip?.getItemAt(0)?.text?.toString().orEmpty()
+
+    @Test
+    fun theIdIsOfferedAsACopyableChip() {
+        show("x-0002")
+        compose.onNodeWithContentDescription("Copy id x-0002").assertIsDisplayed()
+        compose.onNodeWithText("x-0002").assertIsDisplayed()
+    }
+
+    @Test
+    fun copyingTheIdPutsTheBareIdOnTheClipboard() {
+        show("x-0002")
+        compose.runOnUiThread {
+            clipboard().setPrimaryClip(ClipData.newPlainText("other", "something else"))
+        }
+        compose.onNodeWithContentDescription("Copy id x-0002").performClick()
+        compose.waitUntil(5_000) { clipboardText() == "x-0002" }
+        assertEquals("x-0002", clipboardText())
+    }
+
+    @Test
+    fun theCopyIsConfirmed() {
+        show("x-0002")
+        compose.onNodeWithContentDescription("Copy id x-0002").performClick()
+        compose.waitUntil(5_000) { compose.onAllNodesWithTextSafely("Copied x-0002") }
+        compose.onNodeWithText("Copied x-0002").assertIsDisplayed()
+    }
+
+    @Test
+    fun noCopyAffordanceForAnUnknownBean() {
+        show("x-nope")
+        compose.onAllNodesWithContentDescription("Copy id x-nope").assertCountEquals(0)
     }
 
     @Test
