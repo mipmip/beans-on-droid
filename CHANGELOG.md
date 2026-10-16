@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- The bean detail view marks ids in a body that the repository has as tappable
+  mentions that open that bean; a mention of a completed or scrapped bean is
+  struck through.
+
 ## [0.2.0] - 2026-09-29
 
 ### Fixed

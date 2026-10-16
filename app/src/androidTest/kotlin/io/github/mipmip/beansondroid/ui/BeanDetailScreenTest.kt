@@ -3,6 +3,10 @@ package io.github.mipmip.beansondroid.ui
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.text.Spanned
+import android.text.TextPaint
+import android.text.style.ClickableSpan
+import android.widget.TextView
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -11,6 +15,7 @@ import androidx.compose.ui.test.onAllNodesWithText
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
 import androidx.test.espresso.matcher.ViewMatchers.withSubstring
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
@@ -22,8 +27,12 @@ import io.github.mipmip.beansondroid.data.BeansRepository
 import io.github.mipmip.beansondroid.ui.screen.BeanDetailScreen
 import io.github.mipmip.beansondroid.ui.theme.BeansOnDroidTheme
 import io.github.mipmip.beansondroid.viewmodel.AppViewModel
+import io.noties.markwon.ext.tables.TableRowSpan
 import kotlinx.coroutines.runBlocking
+import org.eclipse.jgit.api.Git
+import org.hamcrest.Matchers.allOf
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
@@ -76,9 +85,23 @@ class BeanDetailScreenTest {
                         appendLine("## A heading")
                         appendLine()
                         appendLine("Some **bold** body text.")
+                        appendLine()
+                        appendLine("The parent is x-0001 and the retired one is x-0004.")
+                        appendLine()
+                        appendLine("A word that looks like an id is not-a-real-bean here.")
+                        appendLine()
+                        appendLine("The raw file sits at .beans/x-0001--parent-epic.md.")
+                        appendLine()
+                        appendLine("| Field | Value |")
+                        appendLine("| --- | --- |")
+                        appendLine("| Parent | x-0001 |")
+                        appendLine()
+                        appendLine("Run `./scripts/gate.sh` before shipping.")
+                        appendLine("A code mention is `x-0003` here.")
                     },
                 ),
                 Triple("x-0003", "Blocking task", TestRepo.bean("Blocking task")),
+                Triple("x-0004", "Retired task", TestRepo.bean("Retired task", status = "completed")),
             ),
         )
         runBlocking {
@@ -196,5 +219,111 @@ class BeanDetailScreenTest {
         compose.onNodeWithText("That bean is not here").assertIsDisplayed()
         compose.onNodeWithText("Back").performClick()
         assertTrue(backs > 0)
+    }
+
+    private fun bodyView(marker: String): TextView {
+        lateinit var found: TextView
+        onView(allOf(withSubstring(marker), isAssignableFrom(TextView::class.java)))
+            .check { view, _ -> found = view as TextView }
+        return found
+    }
+
+    private fun mentionSpans(view: TextView, id: String): List<ClickableSpan> {
+        val text = view.text as Spanned
+        val start = text.indexOf(id)
+        return text.getSpans(start, start + id.length, ClickableSpan::class.java).toList()
+    }
+
+    private fun paintOf(span: ClickableSpan): TextPaint =
+        TextPaint().also { span.updateDrawState(it) }
+
+    private fun closeInRemote(id: String) {
+        val dir = File(scratch, "remote")
+        val file = File(dir, ".beans").listFiles().orEmpty().first { it.name.startsWith("$id--") }
+        file.writeText(file.readText().replace("status: todo", "status: completed"))
+        Git.open(dir).use { git ->
+            git.add().addFilepattern(".").call()
+            git.commit().setMessage("close $id").setSign(false).call()
+        }
+    }
+
+    @Test
+    fun aMentionInTheBodyIsClickableAndOpensTheBean() {
+        show("x-0002")
+        compose.waitForIdle()
+        val view = bodyView("The parent is")
+        val text = view.text as Spanned
+        val span = mentionSpans(view, "x-0001").single()
+        assertEquals(text.indexOf("x-0001"), text.getSpanStart(span))
+        assertEquals(text.indexOf("x-0001") + "x-0001".length, text.getSpanEnd(span))
+        compose.runOnUiThread { span.onClick(view) }
+        assertEquals(listOf("x-0001"), opened)
+    }
+
+    @Test
+    fun aClosedMentionIsStruckThroughAndAnOpenOneIsNot() {
+        show("x-0002")
+        compose.waitForIdle()
+        val view = bodyView("The parent is")
+        val open = paintOf(mentionSpans(view, "x-0001").single())
+        val closed = paintOf(mentionSpans(view, "x-0004").single())
+        assertFalse(open.isStrikeThruText)
+        assertTrue(closed.isStrikeThruText)
+        assertTrue(open.bgColor != 0)
+        assertEquals(0, closed.bgColor)
+    }
+
+    @Test
+    fun anIdShapedWordNoBeanHasStaysOrdinary() {
+        show("x-0002")
+        compose.waitForIdle()
+        val view = bodyView("The parent is")
+        assertTrue(mentionSpans(view, "not-a-real-bean").isEmpty())
+    }
+
+    @Test
+    fun aMentionIsStruckThroughAfterTheRepositoryIsReadAgain() {
+        show("x-0002")
+        compose.waitForIdle()
+        val view = bodyView("The parent is")
+        assertFalse(paintOf(mentionSpans(view, "x-0001").single()).isStrikeThruText)
+
+        closeInRemote("x-0001")
+        runBlocking { beans.refresh() }
+        compose.waitForIdle()
+
+        val reread = bodyView("The parent is")
+        assertTrue(paintOf(mentionSpans(reread, "x-0001").single()).isStrikeThruText)
+    }
+
+    @Test
+    fun aCodeSpanAndATableReadAlongsideTheMentions() {
+        show("x-0002")
+        compose.waitForIdle()
+        val view = bodyView("The parent is")
+        val text = view.text as Spanned
+        assertTrue(text.toString(), text.contains("./scripts/gate.sh"))
+        assertTrue(text.getSpans(0, text.length, TableRowSpan::class.java).isNotEmpty())
+        assertTrue(mentionSpans(view, "x-0001").isNotEmpty())
+        assertTrue(mentionSpans(view, "x-0003").isNotEmpty())
+        onView(allOf(withSubstring("./scripts/gate.sh"), isAssignableFrom(TextView::class.java)))
+            .check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun aMentionInsideATableCellIsMarkedAndOpensTheBean() {
+        show("x-0002")
+        compose.waitForIdle()
+        val view = bodyView("The parent is")
+        val outer = view.text as Spanned
+        val cell = outer.getSpans(0, outer.length, TableRowSpan::class.java)
+            .flatMap { MarkwonTables.cells(it) }
+            .first { it.text().contains("x-0001") }
+        val content = cell.text() as Spanned
+        val at = content.toString().indexOf("x-0001")
+        val span = content.getSpans(at, at + "x-0001".length, ClickableSpan::class.java).single()
+        assertEquals(at, content.getSpanStart(span))
+        compose.runOnUiThread { span.onClick(view) }
+        assertEquals(listOf("x-0001"), opened)
     }
 }

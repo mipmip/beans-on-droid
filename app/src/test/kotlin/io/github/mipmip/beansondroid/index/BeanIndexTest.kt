@@ -5,6 +5,7 @@ import io.github.mipmip.beansondroid.bean.BeanParser
 import io.github.mipmip.beansondroid.bean.Fixtures
 import io.github.mipmip.beansondroid.bean.ParseResult
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -188,6 +189,14 @@ class BeanIndexTest {
         assertEquals("b-1", sample.byId("b-1")?.id)
         assertNull(sample.byId("absent"))
         assertEquals(4, sample.size)
+    }
+
+    @Test
+    fun membershipIsAnsweredForAnyId() {
+        assertTrue(sample.holds("b-2"))
+        assertEquals("b-2", sample.byId("b-2")?.id)
+        assertFalse(sample.holds("absent"))
+        assertNull(sample.byId("absent"))
     }
 
     @Test

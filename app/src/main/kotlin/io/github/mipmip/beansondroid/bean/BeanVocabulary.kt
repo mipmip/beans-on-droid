@@ -8,6 +8,10 @@ object BeanVocabulary {
 
     val priorities: List<String> = listOf("critical", "high", "normal", "low", "deferred")
 
+    private const val COMPLETED = "completed"
+
+    private const val SCRAPPED = "scrapped"
+
     private const val NORMAL = "normal"
 
     fun statusRank(status: String): Int = rank(statuses, status)
@@ -18,6 +22,8 @@ object BeanVocabulary {
         priority.isEmpty() -> priorities.indexOf(NORMAL)
         else -> rank(priorities, priority)
     }
+
+    fun isClosed(status: String): Boolean = status == COMPLETED || status == SCRAPPED
 
     fun isRaised(priority: String): Boolean = priority == "critical" || priority == "high"
 

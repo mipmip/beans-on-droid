@@ -44,6 +44,8 @@ class BeanIndex(beans: List<Bean>) {
 
     fun byId(id: String): Bean? = byId[id]
 
+    fun holds(id: String): Boolean = byId.containsKey(id)
+
     fun query(query: BeanQuery): List<Bean> {
         val matched = matching(query)
         return when {

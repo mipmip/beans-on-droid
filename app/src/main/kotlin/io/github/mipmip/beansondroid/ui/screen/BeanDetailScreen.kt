@@ -150,7 +150,12 @@ fun BeanDetailScreen(
             Relations(relations, onOpenBean)
             if (bean.body.isNotBlank()) {
                 HorizontalDivider()
-                MarkdownText(bean.body, modifier = Modifier.fillMaxWidth())
+                MarkdownText(
+                    markdown = bean.body,
+                    lookup = ready.beans.index::byId,
+                    onOpenBean = onOpenBean,
+                    modifier = Modifier.fillMaxWidth(),
+                )
             }
         }
     }
